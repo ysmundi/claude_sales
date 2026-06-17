@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pod 5 — Eight Sleep | FBLA Sales Presentation</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ================= SETUP OVERLAY ================= -->
+  <div id="setup" class="setup">
+    <div class="setup-card">
+      <div class="setup-logo">
+        <span class="eight">8</span>
+        <span class="wordmark">EIGHT<br>SLEEP</span>
+      </div>
+      <h1 class="setup-title">POD 5</h1>
+      <p class="setup-sub">Interactive Sales Presentation · 2026 FBLA · Northern Academy</p>
+
+      <label class="field-label">How many judges are in the room?</label>
+      <div class="judge-pick" id="judgePick">
+        <button class="judge-btn" data-n="1">1</button>
+        <button class="judge-btn active" data-n="2">2</button>
+        <button class="judge-btn" data-n="3">3</button>
+      </div>
+
+      <label class="field-label" for="sectionInput">Section / Room <span class="opt">(optional)</span></label>
+      <input id="sectionInput" class="text-input" type="text" placeholder="e.g. Section A" autocomplete="off" />
+
+      <button id="startBtn" class="start-btn">Start Presentation →</button>
+
+      <p class="setup-hint">
+        Controls: <b>→ / Space</b> next · <b>←</b> back · <b>F</b> fullscreen · <b>R</b> restart · <b>H</b> hide counter
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= STAGE ================= -->
+  <div id="viewport" class="viewport">
+    <div id="stage" class="stage">
+
+      <!-- 1. TITLE -->
+      <section class="slide slide-title no-chrome" data-slide="title">
+        <div class="corner tl"><span class="fbla">2026 FBLA</span><br><span class="school">NORTHERN ACADEMY</span></div>
+        <div class="corner tr prepared">PREPARED BY:<br><b>YUVRAJ MUNDI</b><br><b>SOPHIA DALAVAI</b><br><b>KATIE HOANG</b></div>
+        <div class="title-wrap">
+          <h1 class="mega">POD 5</h1>
+          <div class="title-logo">
+            <span class="eight big">8</span>
+            <span class="wordmark big">EIGHT<br>SLEEP</span>
+          </div>
+        </div>
+        <img class="title-product" src="assets/title_product.png" alt="Pod 5 cover and hub" />
+      </section>
+
+      <!-- 2. PROBLEMS (interactive) -->
+      <section class="slide slide-problems" data-slide="problems">
+        <h1 class="head center orange">PROBLEMS</h1>
+        <p class="needs-summary" id="needsSummary">Tap each problem the judges mention →</p>
+        <div class="prob-grid">
+          <button class="prob-card" data-problem="wakeup">
+            <span class="prob-arrow">↓</span>
+            <span class="prob-title">Can't Wake Up?</span>
+            <span class="prob-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="38" r="17"/><path d="M32 38V28M32 38l9 5"/><path d="M14 16l8-6M50 16l-8-6"/></g><text x="40" y="16" font-size="13" font-weight="800" fill="currentColor" stroke="none">z<tspan font-size="10">z</tspan></text></svg>
+            </span>
+            <span class="prob-check">✓</span>
+          </button>
+          <button class="prob-card" data-problem="temperature">
+            <span class="prob-arrow">↓</span>
+            <span class="prob-title">Different temperature preferences?</span>
+            <span class="prob-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 46h48M12 46v-8h40v8M20 38v-6h24v6"/><circle cx="20" cy="14" r="5"/><path d="M20 5v3M20 20v3M11 14h3M26 14h3M14 8l2 2M26 8l-2 2"/><path d="M44 9v10M40 12l4-4 4 4M40 16l4 4 4-4"/></g></svg>
+            </span>
+            <span class="prob-check">✓</span>
+          </button>
+          <button class="prob-card" data-problem="energy">
+            <span class="prob-arrow">↓</span>
+            <span class="prob-title">Wake up tired?</span>
+            <span class="prob-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="13" r="5"/><path d="M34 20c-6 4-9 7-12 9M22 29l8 5 2 9M30 34l9-2M22 43l-5 9M32 43l3 9"/><rect x="40" y="10" width="14" height="8" rx="1.5"/><path d="M54 12v4"/><rect x="42" y="12" width="4" height="4" fill="currentColor" stroke="none"/></g></svg>
+            </span>
+            <span class="prob-check">✓</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 3. SOLUTION: SMART WAKE-UP (wakeup) -->
+      <section class="slide slide-solution" data-slide="sol-wakeup" data-problem="wakeup">
+        <div class="sol-left">
+          <h1 class="head"><span class="orange">CAN'T</span><br>WAKE UP?</h1>
+          <span class="pill">Smart Wake Up feature</span>
+          <ul class="sol-list">
+            <li>Gentle vibration in the bed</li>
+            <li>Gradual temperature change</li>
+          </ul>
+        </div>
+        <div class="sol-right wake-media">
+          <img class="media-bed" src="assets/couple_waking.jpg" alt="Couple waking up" />
+          <img class="media-phone" src="assets/phone_wakeup.png" alt="Smart wake-up screen showing 6:45 AM" />
+        </div>
+      </section>
+
+      <!-- 4. SOLUTION: DUAL-ZONE (temperature) -->
+      <section class="slide slide-solution" data-slide="sol-temperature" data-problem="temperature">
+        <div class="sol-left temp-media">
+          <img class="temp-couple" src="assets/dualzone_couple.png" alt="Dual-zone temperatures 86 and 67" />
+          <img class="temp-tubes" src="assets/water_tubes.png" alt="Water-based system tubes" />
+          <img class="temp-mattress" src="assets/dualzone_mattress.jpg" alt="Dual-zone mattress hot and cold" />
+        </div>
+        <div class="sol-right end">
+          <h1 class="head right">DIFFERENT<br><span class="orange">TEMPERATURE</span><br><span class="orange">PREFERENCES?</span></h1>
+          <span class="pill">Dual-zone temperature control</span>
+          <ul class="sol-list right-list">
+            <li>Two independent zones</li>
+            <li>Precise water-based system</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 5. SOLUTION: AI TEMP (energy) -->
+      <section class="slide slide-solution" data-slide="sol-energy" data-problem="energy">
+        <div class="sol-left">
+          <h1 class="head"><span class="orange">WAKE UP</span><br>TIRED?</h1>
+          <span class="pill">AI Temperature Adjustments</span>
+          <ul class="sol-list">
+            <li>Maximizes deep &amp; REM sleep</li>
+            <li>~10% more restorative sleep</li>
+          </ul>
+        </div>
+        <div class="sol-right chart-wrap">
+          <div class="chart-title">CHANGE IN RECOVERY SLEEP</div>
+          <div class="chart">
+            <div class="y-axis">
+              <span>60%</span><span>50%</span><span>40%</span><span>30%</span><span>20%</span><span>10%</span><span>0%</span>
+            </div>
+            <div class="bars">
+              <div class="bar-col"><div class="bar" data-h="41"></div><span class="bar-label">Without Pod5</span></div>
+              <div class="bar-col"><div class="bar" data-h="52"></div><span class="bar-label">With Pod5</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. KEY FEATURES -->
+      <section class="slide slide-features" data-slide="features">
+        <h1 class="head center orange">KEY FEATURES</h1>
+        <div class="feat-grid">
+          <div class="feat">
+            <span class="feat-icon">
+              <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 46V34a6 6 0 016-6h40a6 6 0 016 6v12M6 46h52M6 46v6M58 46v6"/><path d="M14 28v-6a4 4 0 014-4h10a3 3 0 013 3v7M33 28v-7a3 3 0 013-3h10a4 4 0 014 4v6"/></g></svg>
+            </span>
+            <span class="feat-label">DUAL ZONE TEMPERATURE CONTROL</span>
+          </div>
+          <div class="feat">
+            <span class="feat-icon">
+              <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="22" width="32" height="24" rx="6"/><path d="M32 14v8M32 14a3 3 0 100-6 3 3 0 000 6z"/><circle cx="25" cy="33" r="2.4" fill="currentColor"/><circle cx="39" cy="33" r="2.4" fill="currentColor"/><path d="M25 40h14"/><path d="M16 30l-4 3v6l4 3M48 30l4 3v6l-4 3"/></g></svg>
+            </span>
+            <span class="feat-label">AI TEMPERATURE ADJUSTMENTS</span>
+          </div>
+          <div class="feat">
+            <span class="feat-icon">
+              <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 44c0-12 4-22 12-22s12 10 12 22zM16 46h32M28 50a4 4 0 008 0"/><path d="M50 22c3 3 4 7 4 11M14 22c-3 3-4 7-4 11"/></g></svg>
+            </span>
+            <span class="feat-label">SMART WAKE UP WITH TEMPERATURE &amp; VIBRATIONS</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. PRICING -->
+      <section class="slide slide-pricing" data-slide="pricing">
+        <h1 class="head center orange">PRICING</h1>
+        <div class="price-hero">
+          <img class="price-img" src="assets/pod5_mattress.png" alt="Pod 5 mattress" />
+          <div class="price-tag">
+            <span class="price-name">POD 5</span>
+            <span class="price-amt">$2,999</span>
+            <span class="price-note">From ~$2/night over 5 years · $81/mo financing</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. PRICING + OTHER OPTIONS (Ultra) -->
+      <section class="slide slide-ultra" data-slide="ultra">
+        <h1 class="head center orange">PRICING + OTHER OPTIONS</h1>
+        <div class="ultra-grid">
+          <div class="ultra-base">
+            <img src="assets/pricing_pod5.png" alt="Pod 5" />
+            <div class="ultra-base-tag"><b>POD 5</b><span>$2,999</span></div>
+          </div>
+          <div class="ultra-card">
+            <img class="ultra-img" src="assets/ultra_base.png" alt="Pod 5 Ultra adjustable base" />
+            <div class="ultra-headline">
+              <span class="pod5u">POD 5U</span>
+              <span class="ultra-meta">POD 5 ULTRA<br><b>$4,999</b></span>
+            </div>
+            <ul class="ultra-list">
+              <li>Snoring detection &amp; mitigation</li>
+              <li>Custom elevation for sleeping</li>
+              <li>Custom elevation for reading</li>
+              <li>Custom elevation for relaxing</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. WHY US -->
+      <section class="slide slide-whyus" data-slide="whyus">
+        <h1 class="head center orange">WHY US</h1>
+        <table class="cmp">
+          <thead>
+            <tr>
+              <th class="feat-col"></th>
+              <th class="us">POD 5<br><small>EIGHT SLEEP</small></th>
+              <th>CHILISLEEP<br><small>CUBE</small></th>
+              <th>CHILIPAD<br><small>DOCK PRO</small></th>
+              <th>BEDJET 3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="rowlab">Dual Zone Temperature</td><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td></tr>
+            <tr><td class="rowlab">Sleep Tracking</td><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+            <tr><td class="rowlab">AI Temp Changes</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+            <tr><td class="rowlab">Low Maintenance</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 10. CLOSE -->
+      <section class="slide slide-close" data-slide="close">
+        <h1 class="mega center close-title">POD 5</h1>
+        <img class="close-coffee" src="assets/coffee.png" alt="Cup of coffee" />
+        <img class="close-bed" src="assets/close_bed.png" alt="Pod 5 bed" />
+        <span class="ribbon ribbon-1">$81/Month Installment</span>
+        <span class="ribbon ribbon-2">30-Day Free Trial &amp; Return</span>
+      </section>
+
+    </div><!-- /stage -->
+
+    <!-- HUD -->
+    <div id="counter" class="counter"></div>
+    <div id="judgeTag" class="judge-tag"></div>
+    <button id="navPrev" class="nav-arrow nav-prev" aria-label="Previous">‹</button>
+    <button id="navNext" class="nav-arrow nav-next" aria-label="Next">›</button>
+  </div>
+
+  <script src="js/slides.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
