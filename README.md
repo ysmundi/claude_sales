@@ -3,9 +3,11 @@
 An interactive, website-style version of the Eight Sleep **Pod 5** sales presentation
 for the FBLA **Sales Presentation** event. Instead of a fixed slide deck, the
 presentation **adapts to the judges' answers**: during needs determination you tap
-the problems the judges raise, and the deck then shows **only the matching solution
-slides**. This mirrors the official rating sheet, which rewards determining needs and
-relating them to the product.
+**which judge** raised each problem, and the deck then builds a personalized path —
+a "Your Personalized Plan" agenda, **only the matching solution slides** (each tagged
+*"For Judge 1 · 3"*), and a closing recap that ties every need back to a product and
+asks for the sale. This mirrors the official rating sheet, which rewards determining
+needs, relating them to the product, and closing.
 
 ## ✅ Built for the official rules
 - **Runs 100% offline.** No internet, no CDNs, no web-loaded fonts — everything
@@ -17,8 +19,9 @@ relating them to the product.
 ## ▶️ How to run
 1. Keep this whole folder together (don't move files out of it).
 2. **Double-click `index.html`** — it opens in your default browser. (Chrome recommended.)
-3. On the setup screen, pick the **number of judges** and an optional section/room label,
-   then click **Start Presentation**.
+3. On the setup screen, **type the number of judges** (use −/+ or the field) and an
+   optional section/room label, then click **Start Presentation**. The judge count
+   controls how many judge chips (J1, J2, …) appear on each problem card.
 4. Press **F** for fullscreen before you begin.
 
 > Tip: copy the entire folder to a USB drive / your presentation laptop ahead of time
@@ -32,13 +35,12 @@ relating them to the product.
 | `F` | Toggle fullscreen |
 | `R` | Restart (back to setup screen) |
 | `H` | Hide/show the slide counter |
-| `1` `2` `3` | (On the Problems slide) toggle a problem card |
 
 ## 🔑 The interactive moment (Problems slide)
 When you reach the **PROBLEMS** slide, ask the judges the three needs-determination
-questions from the script. As each judge responds, **click the matching card**
-(or press `1`/`2`/`3`). Selected cards highlight in orange, and the summary line
-updates live.
+questions from the script. As each judge responds, **tap the judge chip** (J1, J2, …)
+on the matching problem card. A card highlights in orange once any judge is assigned,
+and the summary line updates live (e.g. *Temperature (J1,J3) · Energy (J2)*).
 
 | Problem card | Solution slide that gets shown |
 |---|---|
@@ -46,12 +48,27 @@ updates live.
 | Different temperature preferences? | Dual-Zone Temperature |
 | Wake up tired? | AI Temperature Adjustments (recovery chart) |
 
-When you advance, **only the selected solution slides appear**, in order. If the judges
-indicate **none** of the problems, the presentation **skips straight to Key Features**.
-Key Features, Pricing, Pod 5 Ultra, Why Us, and the Close always show.
+When you advance, the **"Your Personalized Plan" agenda** lists exactly the focus areas
+you tagged (with their judge numbers), then **only the matching solution slides appear**,
+each showing a *"Because you mentioned … — For Judge 1 · 3"* badge. If the judges raise
+**none** of the problems, the agenda shows the full system and the deck **skips the
+solution slides** straight to Key Features.
 
-> With multiple judges, just select every problem any judge raises — the deck covers
-> the combined set.
+Always shown: Title, Problems, Agenda, Key Features, Pricing, Pod 5 Ultra, Why Us,
+**Your Pod 5 Plan (recap)**, and the Close.
+
+### 💰 Closing the sale (recap slide)
+The **Your Pod 5 Plan** slide near the end recaps each need → the feature that solves it
+(with judge tags), and shows a recommended-product card. Toggle **POD 5 / POD 5 ULTRA**
+to match what the judge leans toward — the price counts up and a **SELECTED ✓** stamp
+animates — then reinforce the ~$2/night framing, monthly financing, and the **30-day
+risk-free trial** before asking for the close.
+
+### ✨ Animations
+Motion is intentionally subtle/professional: content rises in with a gentle stagger on
+each slide, the recovery-sleep bars and prices count up, the Why-Us check marks pop in,
+and a thin progress bar tracks your position. All motion respects
+`prefers-reduced-motion`.
 
 ## 📁 Structure
 ```
@@ -70,13 +87,18 @@ fonts/            bundled web fonts (Archivo + Poppins) — for offline use
 
 ## 🧪 Manual test checklist
 1. Open `index.html` with **Wi-Fi off** → it loads fully (fonts + images render).
-2. Setup → 2 judges → Start. Press `F` for fullscreen.
-3. On Problems, select **Temperature + Energy** only → advance → confirm Smart Wake-Up is
-   skipped and you go Dual-Zone → AI Temp → Key Features → Pricing → Ultra → Why Us → Close.
-4. Restart (`R`), select **nothing** → advance from Problems → confirm it jumps straight to
-   Key Features.
-5. Test your wireless clicker's forward/back buttons.
-6. Resize the window → the slide scales without distortion.
+2. Setup → type **4 judges** → Start. Press `F` for fullscreen. Confirm each problem
+   card shows chips **J1–J4**.
+3. On Problems, assign **Temperature → J1, J3** and **Energy → J2** (leave wake-up empty)
+   → advance → confirm the **Agenda** lists Temperature (J1·3) and Energy (J2), then
+   Dual-Zone (badge "For Judges 1 · 3") → AI Temp (badge "For Judge 2") → Key Features
+   → Pricing → Ultra → Why Us → **Your Pod 5 Plan** → Close. Smart Wake-Up is skipped.
+4. On the recap, toggle **POD 5 ULTRA** → price re-counts to $4,999 and the SELECTED
+   stamp animates.
+5. Restart (`R`), assign **no** judges → advance from Problems → Agenda shows the full
+   system → jumps straight to Key Features (all solution slides skipped).
+6. Test your wireless clicker's forward/back buttons.
+7. Resize the window → the slide scales without distortion. Motion stays subtle.
 
 ## Notes on fonts
 The original deck uses *Glacial Indifference* (a Canva font). For reliable offline use this

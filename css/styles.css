@@ -105,14 +105,21 @@ body{
 .setup-sub{ color:var(--muted); font-weight:500; margin:6px 0 38px; font-size:16px; letter-spacing:.3px; }
 .field-label{ display:block; text-align:left; font-weight:600; font-size:16px; margin:18px 0 10px; color:var(--ink); }
 .field-label .opt{ color:var(--muted); font-weight:400; }
-.judge-pick{ display:flex; gap:14px; }
-.judge-btn{
-  flex:1; font-family:var(--display); font-weight:800; font-size:32px;
-  padding:18px 0; border:2px solid var(--card-2); background:#fff; color:var(--ink);
+.judge-stepper{ display:flex; gap:12px; align-items:stretch; justify-content:center; }
+.step-btn{
+  width:64px; font-family:var(--display); font-weight:800; font-size:34px;
+  border:2px solid var(--card-2); background:#fff; color:var(--ink);
   border-radius:16px; cursor:pointer; transition:.15s;
 }
-.judge-btn:hover{ border-color:var(--orange); }
-.judge-btn.active{ background:var(--orange); border-color:var(--orange); color:#fff; }
+.step-btn:hover{ border-color:var(--orange); color:var(--orange); }
+.judge-num{
+  flex:1; text-align:center; font-family:var(--display); font-weight:800; font-size:40px;
+  padding:14px 0; border:2px solid var(--card-2); background:#fff; color:var(--ink);
+  border-radius:16px; -moz-appearance:textfield;
+}
+.judge-num:focus{ outline:none; border-color:var(--orange); }
+.judge-num::-webkit-outer-spin-button,
+.judge-num::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
 .text-input{
   width:100%; padding:15px 18px; font-family:var(--body); font-size:17px;
   border:2px solid var(--card-2); border-radius:14px; background:#fff; color:var(--ink);
@@ -167,6 +174,16 @@ body{
 .prob-card.selected .prob-title{ color:var(--orange); }
 .prob-card.selected .prob-check{ opacity:1; transform:scale(1); }
 
+/* per-card judge chips */
+.prob-judges{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:24px; min-height:38px; }
+.judge-chip{
+  font-family:var(--display); font-weight:800; font-size:16px; letter-spacing:.5px;
+  min-width:42px; padding:8px 10px; border-radius:12px; cursor:pointer;
+  border:2px solid var(--card-2); background:#fff; color:var(--muted); transition:.14s;
+}
+.judge-chip:hover{ border-color:var(--orange); color:var(--orange); }
+.judge-chip.on{ background:var(--orange); border-color:var(--orange); color:#fff; transform:scale(1.06); }
+
 /* ===================== SOLUTION SLIDES ===================== */
 .slide-solution{ flex-direction:row; align-items:center; gap:50px; }
 .sol-left,.sol-right{ flex:1; display:flex; flex-direction:column; }
@@ -192,10 +209,31 @@ body{
 .bars{ flex:1; display:flex; gap:46px; align-items:flex-end; border-left:2px solid #cdcdcd; padding-left:30px; }
 .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
 .bar{
+  position:relative;
   width:135px; background:var(--orange); border-radius:14px 14px 0 0;
   height:0; transition:height 1.1s cubic-bezier(.2,.8,.2,1);
 }
+.bar-pct{
+  position:absolute; top:-40px; left:50%; transform:translateX(-50%);
+  font-family:var(--display); font-weight:900; font-size:30px; color:var(--ink); white-space:nowrap;
+}
 .bar-label{ margin-top:14px; font-weight:600; font-size:24px; }
+
+/* solution-slide "why this slide is here" badge */
+.sol-badge{
+  position:absolute; top:34px; left:50%; transform:translateX(-50%); z-index:6;
+  display:flex; align-items:center; gap:14px; max-width:80%;
+  background:var(--ink); color:#fff; padding:11px 22px; border-radius:30px;
+  font-weight:600; font-size:16px; letter-spacing:.4px; text-align:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.18);
+}
+.sol-badge:empty{ display:none; }
+.sol-badge .sb-mention{ opacity:.85; }
+.sol-badge .sb-mention b{ color:#fff; font-weight:800; }
+.sol-badge .sb-judges{
+  background:var(--orange); color:#fff; font-family:var(--display); font-weight:800;
+  font-size:14px; letter-spacing:.6px; padding:5px 12px; border-radius:20px; white-space:nowrap;
+}
 
 /* ===================== KEY FEATURES ===================== */
 .slide-features .head{ margin-bottom:10px; }
@@ -291,3 +329,109 @@ body{
 .nav-arrow:hover{ opacity:1 !important; background:var(--orange); }
 .nav-prev{ left:16px; }
 .nav-next{ right:16px; }
+
+/* progress bar (top of stage) */
+.progress{ position:absolute; top:0; left:0; right:0; height:4px; background:rgba(0,0,0,.06); z-index:18; }
+.progress-bar{ height:100%; width:0; background:var(--orange); transition:width .45s ease; }
+
+/* ===================== AGENDA (personalized plan) ===================== */
+.slide-agenda{ align-items:center; justify-content:center; text-align:center; }
+.slide-agenda .head{ font-size:80px; }
+.agenda-sub{ color:var(--muted); font-weight:500; font-size:24px; margin-top:12px; }
+.agenda-list{ list-style:none; margin:34px 0 26px; width:100%; max-width:1000px; display:flex; flex-direction:column; gap:16px; }
+.agenda-item{
+  display:flex; align-items:center; gap:22px; background:var(--card); border-radius:18px;
+  padding:20px 28px; text-align:left;
+}
+.agenda-item .ai-num{
+  flex:none; width:46px; height:46px; border-radius:50%; background:var(--orange); color:#fff;
+  font-family:var(--display); font-weight:900; font-size:22px;
+  display:flex; align-items:center; justify-content:center;
+}
+.agenda-item .ai-text{ flex:1; font-weight:700; font-size:26px; color:var(--ink); }
+.agenda-item .ai-text small{ display:block; font-weight:500; font-size:18px; color:var(--muted); margin-top:3px; }
+.agenda-item .ai-judges{
+  flex:none; background:#fff; border:2px solid var(--orange); color:var(--orange);
+  font-family:var(--display); font-weight:800; font-size:16px; letter-spacing:.5px;
+  padding:8px 16px; border-radius:20px; white-space:nowrap;
+}
+.agenda-item.full .ai-text{ color:var(--orange); }
+.agenda-always{ color:var(--muted); font-weight:600; font-size:18px; letter-spacing:.3px; }
+
+/* ===================== RECAP (plan + close the sale) ===================== */
+.slide-recap .head{ font-size:78px; text-align:center; margin-bottom:6px; }
+.recap-body{ flex:1; display:flex; gap:48px; align-items:center; margin-top:10px; }
+.recap-left{ flex:1.15; }
+.recap-list{ list-style:none; display:flex; flex-direction:column; gap:14px; }
+.recap-row{
+  display:flex; align-items:center; gap:16px; background:var(--card); border-radius:16px; padding:16px 22px;
+}
+.recap-row .rr-said{ flex:1; font-weight:700; font-size:21px; color:var(--ink); }
+.recap-row .rr-said small{ display:block; font-weight:500; font-size:15px; color:var(--muted); margin-top:2px; }
+.recap-row .rr-arrow{ flex:none; color:var(--orange); font-size:28px; font-weight:900; }
+.recap-row .rr-solved{ flex:1.1; font-weight:600; font-size:18px; color:var(--orange); }
+.recap-row .rr-judges{
+  flex:none; background:var(--orange); color:#fff; font-family:var(--display); font-weight:800;
+  font-size:13px; letter-spacing:.5px; padding:5px 11px; border-radius:16px;
+}
+.recap-row.generic{ justify-content:center; }
+.recap-row.generic .rr-said{ flex:none; text-align:center; color:var(--orange); }
+
+.recap-right{ flex:.85; display:flex; flex-direction:column; align-items:stretch; }
+.recap-prod-toggle{ display:flex; gap:10px; margin-bottom:16px; }
+.prod-btn{
+  flex:1; font-family:var(--display); font-weight:800; font-size:18px; padding:12px 0;
+  border:2px solid var(--card-2); background:#fff; color:var(--muted); border-radius:14px; cursor:pointer; transition:.14s;
+}
+.prod-btn:hover{ border-color:var(--orange); color:var(--orange); }
+.prod-btn.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
+.recap-card{
+  position:relative; background:#fff; border:3px solid var(--orange); border-radius:24px;
+  padding:32px 30px; display:flex; flex-direction:column; align-items:center; text-align:center;
+  box-shadow:0 12px 34px rgba(231,78,26,.16);
+}
+.recap-stamp{
+  position:absolute; top:-16px; right:-10px; background:var(--orange); color:#fff;
+  font-family:var(--display); font-weight:800; font-size:15px; letter-spacing:.5px;
+  padding:8px 16px; border-radius:20px; transform:rotate(7deg); transition:.2s;
+  box-shadow:0 6px 16px rgba(231,78,26,.3);
+}
+.recap-prod-name{ font-family:var(--display); font-weight:900; font-size:44px; color:var(--ink); letter-spacing:-1px; }
+.recap-price{ font-family:var(--display); font-weight:900; font-size:84px; color:var(--orange); line-height:.95; letter-spacing:-3px; margin:4px 0; }
+.recap-pernight{ font-weight:600; font-size:18px; color:var(--ink); }
+.recap-monthly{ font-weight:500; font-size:16px; color:var(--muted); margin-top:2px; }
+.recap-trial{
+  margin-top:18px; background:var(--ink); color:#fff; font-family:var(--display); font-weight:800;
+  font-size:15px; letter-spacing:.8px; padding:10px 18px; border-radius:14px;
+}
+.recap-followup{ margin-top:16px; text-align:center; color:var(--muted); font-weight:500; font-size:16px; line-height:1.4; }
+
+/* ===================== ENTRANCE ANIMATIONS (subtle) ===================== */
+@keyframes rise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes pop{ 0%{ opacity:0; transform:scale(.4); } 70%{ transform:scale(1.12); } 100%{ opacity:1; transform:scale(1); } }
+
+.slide [data-anim]{ opacity:0; }
+.slide.is-active [data-anim]{ animation:rise .5s cubic-bezier(.2,.8,.2,1) both; }
+.slide.is-active [data-anim]:nth-child(2){ animation-delay:.08s; }
+.slide.is-active [data-anim]:nth-child(3){ animation-delay:.16s; }
+.slide.is-active [data-anim]:nth-child(4){ animation-delay:.24s; }
+/* agenda/recap list items get their own stagger via JS inline delay */
+.slide.is-active .agenda-item,
+.slide.is-active .recap-row{ animation:rise .5s cubic-bezier(.2,.8,.2,1) both; }
+.feat-grid .feat:nth-child(2){ animation-delay:.1s; }
+.feat-grid .feat:nth-child(3){ animation-delay:.2s; }
+
+/* comparison check/X pop-in (driven by .pop class added on enter) */
+.cmp .yes,.cmp .no{ opacity:0; }
+.cmp.pop .yes,.cmp.pop .no{ animation:pop .42s cubic-bezier(.2,.8,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce){
+  .slide{ transition:none; }
+  .slide [data-anim],
+  .slide.is-active [data-anim],
+  .slide.is-active .agenda-item,
+  .slide.is-active .recap-row,
+  .cmp .yes,.cmp .no{ opacity:1 !important; animation:none !important; }
+  .bar{ transition:none; }
+  .progress-bar{ transition:none; }
+}

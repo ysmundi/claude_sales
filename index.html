@@ -19,10 +19,10 @@
       <p class="setup-sub">Interactive Sales Presentation · 2026 FBLA · Northern Academy</p>
 
       <label class="field-label">How many judges are in the room?</label>
-      <div class="judge-pick" id="judgePick">
-        <button class="judge-btn" data-n="1">1</button>
-        <button class="judge-btn active" data-n="2">2</button>
-        <button class="judge-btn" data-n="3">3</button>
+      <div class="judge-stepper" id="judgePick">
+        <button type="button" class="step-btn" data-step="-1" aria-label="Fewer judges">−</button>
+        <input id="judgeCount" class="judge-num" type="number" min="1" max="8" value="2" inputmode="numeric" />
+        <button type="button" class="step-btn" data-step="1" aria-label="More judges">+</button>
       </div>
 
       <label class="field-label" for="sectionInput">Section / Room <span class="opt">(optional)</span></label>
@@ -57,37 +57,49 @@
       <!-- 2. PROBLEMS (interactive) -->
       <section class="slide slide-problems" data-slide="problems">
         <h1 class="head center orange">PROBLEMS</h1>
-        <p class="needs-summary" id="needsSummary">Tap each problem the judges mention →</p>
+        <p class="needs-summary" id="needsSummary">Tap the judge(s) who mention each problem →</p>
         <div class="prob-grid">
-          <button class="prob-card" data-problem="wakeup">
+          <div class="prob-card" data-problem="wakeup">
             <span class="prob-arrow">↓</span>
             <span class="prob-title">Can't Wake Up?</span>
             <span class="prob-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="38" r="17"/><path d="M32 38V28M32 38l9 5"/><path d="M14 16l8-6M50 16l-8-6"/></g><text x="40" y="16" font-size="13" font-weight="800" fill="currentColor" stroke="none">z<tspan font-size="10">z</tspan></text></svg>
             </span>
+            <span class="prob-judges" data-chips="wakeup"></span>
             <span class="prob-check">✓</span>
-          </button>
-          <button class="prob-card" data-problem="temperature">
+          </div>
+          <div class="prob-card" data-problem="temperature">
             <span class="prob-arrow">↓</span>
             <span class="prob-title">Different temperature preferences?</span>
             <span class="prob-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 46h48M12 46v-8h40v8M20 38v-6h24v6"/><circle cx="20" cy="14" r="5"/><path d="M20 5v3M20 20v3M11 14h3M26 14h3M14 8l2 2M26 8l-2 2"/><path d="M44 9v10M40 12l4-4 4 4M40 16l4 4 4-4"/></g></svg>
             </span>
+            <span class="prob-judges" data-chips="temperature"></span>
             <span class="prob-check">✓</span>
-          </button>
-          <button class="prob-card" data-problem="energy">
+          </div>
+          <div class="prob-card" data-problem="energy">
             <span class="prob-arrow">↓</span>
             <span class="prob-title">Wake up tired?</span>
             <span class="prob-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="13" r="5"/><path d="M34 20c-6 4-9 7-12 9M22 29l8 5 2 9M30 34l9-2M22 43l-5 9M32 43l3 9"/><rect x="40" y="10" width="14" height="8" rx="1.5"/><path d="M54 12v4"/><rect x="42" y="12" width="4" height="4" fill="currentColor" stroke="none"/></g></svg>
             </span>
+            <span class="prob-judges" data-chips="energy"></span>
             <span class="prob-check">✓</span>
-          </button>
+          </div>
         </div>
+      </section>
+
+      <!-- 2b. AGENDA — the personalized plan reveal -->
+      <section class="slide slide-agenda" data-slide="agenda">
+        <h1 class="head center" data-anim>YOUR <span class="orange">PERSONALIZED</span> PLAN</h1>
+        <p class="agenda-sub" data-anim>Built live from what your panel told us</p>
+        <ul class="agenda-list" id="agendaList"><!-- filled by JS --></ul>
+        <p class="agenda-always" data-anim>Always included: Key Features · Pricing &amp; Options · Why Us · Your Plan</p>
       </section>
 
       <!-- 3. SOLUTION: SMART WAKE-UP (wakeup) -->
       <section class="slide slide-solution" data-slide="sol-wakeup" data-problem="wakeup">
+        <div class="sol-badge" data-badge="wakeup"></div>
         <div class="sol-left">
           <h1 class="head"><span class="orange">CAN'T</span><br>WAKE UP?</h1>
           <span class="pill">Smart Wake Up feature</span>
@@ -104,6 +116,7 @@
 
       <!-- 4. SOLUTION: DUAL-ZONE (temperature) -->
       <section class="slide slide-solution" data-slide="sol-temperature" data-problem="temperature">
+        <div class="sol-badge" data-badge="temperature"></div>
         <div class="sol-left temp-media">
           <img class="temp-couple" src="assets/dualzone_couple.png" alt="Dual-zone temperatures 86 and 67" />
           <img class="temp-tubes" src="assets/water_tubes.png" alt="Water-based system tubes" />
@@ -121,6 +134,7 @@
 
       <!-- 5. SOLUTION: AI TEMP (energy) -->
       <section class="slide slide-solution" data-slide="sol-energy" data-problem="energy">
+        <div class="sol-badge" data-badge="energy"></div>
         <div class="sol-left">
           <h1 class="head"><span class="orange">WAKE UP</span><br>TIRED?</h1>
           <span class="pill">AI Temperature Adjustments</span>
@@ -136,8 +150,8 @@
               <span>60%</span><span>50%</span><span>40%</span><span>30%</span><span>20%</span><span>10%</span><span>0%</span>
             </div>
             <div class="bars">
-              <div class="bar-col"><div class="bar" data-h="41"></div><span class="bar-label">Without Pod5</span></div>
-              <div class="bar-col"><div class="bar" data-h="52"></div><span class="bar-label">With Pod5</span></div>
+              <div class="bar-col"><div class="bar" data-h="41"><span class="bar-pct" data-v="41">0%</span></div><span class="bar-label">Without Pod5</span></div>
+              <div class="bar-col"><div class="bar" data-h="52"><span class="bar-pct" data-v="52">0%</span></div><span class="bar-label">With Pod5</span></div>
             </div>
           </div>
         </div>
@@ -147,19 +161,19 @@
       <section class="slide slide-features" data-slide="features">
         <h1 class="head center orange">KEY FEATURES</h1>
         <div class="feat-grid">
-          <div class="feat">
+          <div class="feat" data-anim>
             <span class="feat-icon">
               <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 46V34a6 6 0 016-6h40a6 6 0 016 6v12M6 46h52M6 46v6M58 46v6"/><path d="M14 28v-6a4 4 0 014-4h10a3 3 0 013 3v7M33 28v-7a3 3 0 013-3h10a4 4 0 014 4v6"/></g></svg>
             </span>
             <span class="feat-label">DUAL ZONE TEMPERATURE CONTROL</span>
           </div>
-          <div class="feat">
+          <div class="feat" data-anim>
             <span class="feat-icon">
               <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="22" width="32" height="24" rx="6"/><path d="M32 14v8M32 14a3 3 0 100-6 3 3 0 000 6z"/><circle cx="25" cy="33" r="2.4" fill="currentColor"/><circle cx="39" cy="33" r="2.4" fill="currentColor"/><path d="M25 40h14"/><path d="M16 30l-4 3v6l4 3M48 30l4 3v6l-4 3"/></g></svg>
             </span>
             <span class="feat-label">AI TEMPERATURE ADJUSTMENTS</span>
           </div>
-          <div class="feat">
+          <div class="feat" data-anim>
             <span class="feat-icon">
               <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 44c0-12 4-22 12-22s12 10 12 22zM16 46h32M28 50a4 4 0 008 0"/><path d="M50 22c3 3 4 7 4 11M14 22c-3 3-4 7-4 11"/></g></svg>
             </span>
@@ -172,10 +186,10 @@
       <section class="slide slide-pricing" data-slide="pricing">
         <h1 class="head center orange">PRICING</h1>
         <div class="price-hero">
-          <img class="price-img" src="assets/pod5_mattress.png" alt="Pod 5 mattress" />
-          <div class="price-tag">
+          <img class="price-img" src="assets/pod5_mattress.png" alt="Pod 5 mattress" data-anim />
+          <div class="price-tag" data-anim>
             <span class="price-name">POD 5</span>
-            <span class="price-amt">$2,999</span>
+            <span class="price-amt" data-v="2999">$0</span>
             <span class="price-note">From ~$2/night over 5 years · $81/mo financing</span>
           </div>
         </div>
@@ -185,11 +199,11 @@
       <section class="slide slide-ultra" data-slide="ultra">
         <h1 class="head center orange">PRICING + OTHER OPTIONS</h1>
         <div class="ultra-grid">
-          <div class="ultra-base">
+          <div class="ultra-base" data-anim>
             <img src="assets/pricing_pod5.png" alt="Pod 5" />
             <div class="ultra-base-tag"><b>POD 5</b><span>$2,999</span></div>
           </div>
-          <div class="ultra-card">
+          <div class="ultra-card" data-anim>
             <img class="ultra-img" src="assets/ultra_base.png" alt="Pod 5 Ultra adjustable base" />
             <div class="ultra-headline">
               <span class="pod5u">POD 5U</span>
@@ -227,7 +241,32 @@
         </table>
       </section>
 
-      <!-- 10. CLOSE -->
+      <!-- 10. RECAP — personalized plan + close the sale -->
+      <section class="slide slide-recap" data-slide="recap">
+        <h1 class="head center" data-anim>YOUR <span class="orange">POD 5</span> PLAN</h1>
+        <div class="recap-body">
+          <div class="recap-left">
+            <ul class="recap-list" id="recapList"><!-- filled by JS --></ul>
+          </div>
+          <div class="recap-right" data-anim>
+            <div class="recap-prod-toggle" id="recapToggle">
+              <button type="button" class="prod-btn active" data-prod="pod5">POD 5</button>
+              <button type="button" class="prod-btn" data-prod="ultra">POD 5 ULTRA</button>
+            </div>
+            <div class="recap-card">
+              <span class="recap-stamp" id="recapStamp">SELECTED ✓</span>
+              <span class="recap-prod-name" id="recapName">POD 5</span>
+              <span class="recap-price" id="recapPrice" data-v="2999">$0</span>
+              <span class="recap-pernight" id="recapPerNight">~$2 / night over 5 years</span>
+              <span class="recap-monthly" id="recapMonthly">$81 / mo financing</span>
+              <div class="recap-trial">30-DAY RISK-FREE TRIAL &amp; RETURN</div>
+            </div>
+            <p class="recap-followup">Plus ongoing sleep insights &amp; software updates — we grow with your sleep.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. CLOSE -->
       <section class="slide slide-close" data-slide="close">
         <h1 class="mega center close-title">POD 5</h1>
         <img class="close-coffee" src="assets/coffee.png" alt="Cup of coffee" />
@@ -239,6 +278,7 @@
     </div><!-- /stage -->
 
     <!-- HUD -->
+    <div id="progress" class="progress"><div id="progressBar" class="progress-bar"></div></div>
     <div id="counter" class="counter"></div>
     <div id="judgeTag" class="judge-tag"></div>
     <button id="navPrev" class="nav-arrow nav-prev" aria-label="Previous">‹</button>
