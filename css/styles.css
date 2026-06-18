@@ -173,6 +173,16 @@ body{
 .prob-card.selected{ border-color:var(--orange); background:#fff; box-shadow:0 8px 26px rgba(231,78,26,.18); }
 .prob-card.selected .prob-title{ color:var(--orange); }
 .prob-card.selected .prob-check{ opacity:1; transform:scale(1); }
+/* prominent "which judge(s)" banner under each problem title */
+.prob-assigned{
+  display:none; margin-top:12px; font-family:var(--display); font-weight:800;
+  font-size:18px; letter-spacing:.6px; color:#fff; background:var(--orange);
+  padding:8px 18px; border-radius:22px; box-shadow:0 6px 16px rgba(231,78,26,.3);
+}
+.prob-card.selected .prob-assigned{ display:inline-block; animation:pop .35s cubic-bezier(.2,.8,.2,1) both; }
+/* keyboard focus ring — which problem the number keys act on */
+.prob-card.focused{ outline:3px solid var(--orange); outline-offset:5px; transform:translateY(-4px); }
+.prob-card.focused .judge-chip{ border-color:var(--orange); }
 
 /* per-card judge chips */
 .prob-judges{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:24px; min-height:38px; }
@@ -182,7 +192,7 @@ body{
   border:2px solid var(--card-2); background:#fff; color:var(--muted); transition:.14s;
 }
 .judge-chip:hover{ border-color:var(--orange); color:var(--orange); }
-.judge-chip.on{ background:var(--orange); border-color:var(--orange); color:#fff; transform:scale(1.06); }
+.judge-chip.on{ background:var(--orange); border-color:var(--orange); color:#fff; transform:scale(1.14); box-shadow:0 4px 12px rgba(231,78,26,.32); }
 
 /* ===================== SOLUTION SLIDES ===================== */
 .slide-solution{ flex-direction:row; align-items:center; gap:50px; }
@@ -377,34 +387,64 @@ body{
 .recap-row.generic{ justify-content:center; }
 .recap-row.generic .rr-said{ flex:none; text-align:center; color:var(--orange); }
 
-.recap-right{ flex:.85; display:flex; flex-direction:column; align-items:stretch; }
-.recap-prod-toggle{ display:flex; gap:10px; margin-bottom:16px; }
-.prod-btn{
-  flex:1; font-family:var(--display); font-weight:800; font-size:18px; padding:12px 0;
-  border:2px solid var(--card-2); background:#fff; color:var(--muted); border-radius:14px; cursor:pointer; transition:.14s;
+.recap-right{ flex:.95; display:flex; flex-direction:column; align-items:stretch; }
+.recap-right-title{ font-weight:700; font-size:18px; color:var(--ink); margin-bottom:12px; text-align:center; }
+.recap-right-title b{ color:var(--orange); }
+
+/* per-judge product picker */
+.judge-prod-list{ list-style:none; display:flex; flex-direction:column; gap:10px; }
+.jp-row{ display:flex; align-items:center; gap:14px; background:var(--card); border-radius:14px; padding:10px 14px; }
+.jp-judge{
+  flex:none; min-width:92px; font-family:var(--display); font-weight:900; font-size:15px; letter-spacing:.5px;
+  color:var(--ink);
 }
-.prod-btn:hover{ border-color:var(--orange); color:var(--orange); }
-.prod-btn.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
-.recap-card{
-  position:relative; background:#fff; border:3px solid var(--orange); border-radius:24px;
-  padding:32px 30px; display:flex; flex-direction:column; align-items:center; text-align:center;
-  box-shadow:0 12px 34px rgba(231,78,26,.16);
+.jp-toggle{ flex:1; display:flex; gap:8px; }
+.jp-btn{
+  flex:1; font-family:var(--display); font-weight:800; font-size:14px; letter-spacing:.3px; padding:9px 0;
+  border:2px solid var(--card-2); background:#fff; color:var(--muted); border-radius:11px; cursor:pointer; transition:.14s;
 }
-.recap-stamp{
-  position:absolute; top:-16px; right:-10px; background:var(--orange); color:#fff;
-  font-family:var(--display); font-weight:800; font-size:15px; letter-spacing:.5px;
-  padding:8px 16px; border-radius:20px; transform:rotate(7deg); transition:.2s;
-  box-shadow:0 6px 16px rgba(231,78,26,.3);
+.jp-btn:hover{ border-color:var(--orange); color:var(--orange); }
+.jp-btn.active{ background:var(--orange); border-color:var(--orange); color:#fff; }
+
+/* combined totals */
+.recap-totals{
+  margin-top:16px; background:#fff; border:3px solid var(--orange); border-radius:18px; padding:16px 20px;
+  box-shadow:0 10px 28px rgba(231,78,26,.14);
 }
-.recap-prod-name{ font-family:var(--display); font-weight:900; font-size:44px; color:var(--ink); letter-spacing:-1px; }
-.recap-price{ font-family:var(--display); font-weight:900; font-size:84px; color:var(--orange); line-height:.95; letter-spacing:-3px; margin:4px 0; }
-.recap-pernight{ font-weight:600; font-size:18px; color:var(--ink); }
-.recap-monthly{ font-weight:500; font-size:16px; color:var(--muted); margin-top:2px; }
+.rt-line{ display:flex; justify-content:space-between; font-weight:600; font-size:17px; color:var(--ink); padding:3px 0; }
+.rt-total{
+  display:flex; justify-content:space-between; align-items:baseline; margin-top:8px; padding-top:10px;
+  border-top:2px solid var(--card-2); font-family:var(--display); font-weight:900; color:var(--ink); font-size:20px;
+}
+.rt-total .rt-amt{ color:var(--orange); font-size:34px; letter-spacing:-1px; }
 .recap-trial{
-  margin-top:18px; background:var(--ink); color:#fff; font-family:var(--display); font-weight:800;
-  font-size:15px; letter-spacing:.8px; padding:10px 18px; border-radius:14px;
+  margin-top:16px; background:var(--ink); color:#fff; font-family:var(--display); font-weight:800;
+  font-size:15px; letter-spacing:.8px; padding:10px 18px; border-radius:14px; text-align:center;
 }
-.recap-followup{ margin-top:16px; text-align:center; color:var(--muted); font-weight:500; font-size:16px; line-height:1.4; }
+.recap-followup{ margin-top:14px; text-align:center; color:var(--muted); font-weight:500; font-size:15px; line-height:1.4; }
+.slide.is-active .jp-row{ animation:rise .5s cubic-bezier(.2,.8,.2,1) both; }
+
+/* ===================== JUDGE SUMMARY (final per-judge recap) ===================== */
+.slide-summary .head{ font-size:78px; text-align:center; margin-bottom:4px; }
+.summary-sub{ text-align:center; color:var(--muted); font-weight:600; font-size:20px; margin-bottom:26px; }
+.summary-list{
+  list-style:none; width:100%; max-width:1040px; margin:0 auto; flex:1;
+  display:flex; flex-direction:column; gap:14px; justify-content:center;
+}
+.summary-row{
+  display:flex; align-items:center; gap:24px; background:var(--card); border-radius:18px; padding:18px 26px;
+}
+.summary-row .sr-judge{
+  flex:none; min-width:120px; font-family:var(--display); font-weight:900; font-size:20px; letter-spacing:.5px;
+  color:#fff; background:var(--orange); border-radius:14px; padding:14px 18px; text-align:center;
+}
+.summary-row .sr-body{ flex:1; display:flex; flex-direction:column; gap:10px; }
+.summary-row .sr-pair{ display:flex; align-items:center; gap:14px; }
+.summary-row .sr-said{ flex:none; min-width:230px; font-weight:700; font-size:19px; color:var(--ink); }
+.summary-row .sr-arrow{ flex:none; color:var(--orange); font-size:24px; font-weight:900; }
+.summary-row .sr-feat{ flex:1; font-weight:600; font-size:18px; color:var(--orange); }
+.summary-row .sr-pair.generic .sr-feat{ color:var(--ink); }
+.slide.is-active .summary-row{ animation:rise .5s cubic-bezier(.2,.8,.2,1) both; }
 
 /* ===================== ENTRANCE ANIMATIONS (subtle) ===================== */
 @keyframes rise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
@@ -431,6 +471,9 @@ body{
   .slide.is-active [data-anim],
   .slide.is-active .agenda-item,
   .slide.is-active .recap-row,
+  .slide.is-active .summary-row,
+  .slide.is-active .jp-row,
+  .prob-card.selected .prob-assigned,
   .cmp .yes,.cmp .no{ opacity:1 !important; animation:none !important; }
   .bar{ transition:none; }
   .progress-bar{ transition:none; }

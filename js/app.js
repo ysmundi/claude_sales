@@ -37,15 +37,19 @@
   PROBLEMS.forEach(function (p) { assignments[p] = new Set(); });
 
   var currentId = 'title';
+  var focusedProblem = 'wakeup';   // which problem card the number keys act on
   var judgeCount = 2;
-  var sectionLabel = '';
   var started = false;
-  var recapProd = 'pod5';
+  // per-judge product pick on the recap slide: judge number -> 'pod5' | 'ultra'
+  var judgeProduct = {};
 
   function judgesFor(problem) {
     return Array.from(assignments[problem]).sort(function (a, b) { return a - b; });
   }
   function isAssigned(problem) { return assignments[problem].size > 0; }
+  function problemsForJudge(n) {
+    return PROBLEM_ORDER.filter(function (p) { return assignments[p].has(n); });
+  }
 
   /* -------- inject shared chrome (FBLA tag + logo) on non-title slides -------- */
   function injectChrome() {
@@ -140,8 +144,8 @@
     if (progressBar) progressBar.style.width = (pos / list.length * 100) + '%';
 
     // per-slide content + entry hooks
-    if (currentId === 'agenda') renderAgenda();
     if (currentId === 'recap') renderRecap();
+    if (currentId === 'summary') renderSummary();
     if (COND[currentId]) renderBadge(currentId);
     updateProblemUI();
 
@@ -189,34 +193,6 @@
       '<span class="sb-judges">' + forJudgesLabel(arr) + '</span>';
   }
 
-  /* -------- agenda (personalized plan) -------- */
-  function renderAgenda() {
-    var list = document.getElementById('agendaList');
-    if (!list) return;
-    list.innerHTML = '';
-    var assigned = PROBLEM_ORDER.filter(isAssigned);
-    if (assigned.length === 0) {
-      var li = document.createElement('li');
-      li.className = 'agenda-item full';
-      li.innerHTML = '<span class="ai-num">★</span>' +
-        '<span class="ai-text">The complete Pod 5 system<small>A full walkthrough of every feature</small></span>';
-      list.appendChild(li);
-      return;
-    }
-    assigned.forEach(function (p, i) {
-      var arr = judgesFor(p);
-      var li = document.createElement('li');
-      li.className = 'agenda-item';
-      li.style.animationDelay = (0.12 + i * 0.1) + 's';
-      li.innerHTML =
-        '<span class="ai-num">' + (i + 1) + '</span>' +
-        '<span class="ai-text">' + DECK.featureFor[p].split(' (')[0] +
-        '<small>For ' + SAID[p] + '</small></span>' +
-        '<span class="ai-judges">' + forJudgesLabel(arr) + '</span>';
-      list.appendChild(li);
-    });
-  }
-
   /* -------- recap (plan + close the sale) -------- */
   function renderRecap() {
     var list = document.getElementById('recapList');
@@ -243,40 +219,107 @@
         });
       }
     }
-    updateRecapProduct();
+    renderJudgeProducts();
   }
 
-  function updateRecapProduct() {
-    var prod = DECK.products[recapProd];
-    if (!prod) return;
-    document.querySelectorAll('#recapToggle .prod-btn').forEach(function (b) {
-      b.classList.toggle('active', b.dataset.prod === recapProd);
+  // make sure every current judge has a product (default Pod 5)
+  function ensureJudgeProducts() {
+    for (var n = 1; n <= judgeCount; n++) {
+      if (judgeProduct[n] !== 'pod5' && judgeProduct[n] !== 'ultra') judgeProduct[n] = 'pod5';
+    }
+  }
+
+  // build the per-judge product toggles + the combined totals
+  function renderJudgeProducts() {
+    ensureJudgeProducts();
+    var listEl = document.getElementById('judgeProdList');
+    if (listEl) {
+      listEl.innerHTML = '';
+      for (var n = 1; n <= judgeCount; n++) {
+        var sel = judgeProduct[n];
+        var li = document.createElement('li');
+        li.className = 'jp-row';
+        li.style.animationDelay = (0.08 + (n - 1) * 0.07) + 's';
+        li.innerHTML =
+          '<span class="jp-judge">JUDGE ' + n + '</span>' +
+          '<div class="jp-toggle">' +
+            '<button type="button" class="jp-btn' + (sel === 'pod5' ? ' active' : '') +
+              '" data-judge="' + n + '" data-prod="pod5">POD 5</button>' +
+            '<button type="button" class="jp-btn' + (sel === 'ultra' ? ' active' : '') +
+              '" data-judge="' + n + '" data-prod="ultra">POD 5 ULTRA</button>' +
+          '</div>';
+        listEl.appendChild(li);
+      }
+    }
+    renderTotals();
+  }
+
+  function renderTotals() {
+    var totalsEl = document.getElementById('recapTotals');
+    if (!totalsEl) return;
+    var counts = { pod5: 0, ultra: 0 };
+    for (var n = 1; n <= judgeCount; n++) counts[judgeProduct[n]]++;
+    var rows = '';
+    ['pod5', 'ultra'].forEach(function (key) {
+      if (!counts[key]) return;
+      var prod = DECK.products[key];
+      rows += '<div class="rt-line"><span>' + counts[key] + '× ' + prod.name + '</span>' +
+        '<span>' + prod.priceLabel + ' each</span></div>';
     });
-    var nameEl = document.getElementById('recapName');
-    var priceEl = document.getElementById('recapPrice');
-    var perNightEl = document.getElementById('recapPerNight');
-    var monthlyEl = document.getElementById('recapMonthly');
-    var stamp = document.getElementById('recapStamp');
-    if (nameEl) nameEl.textContent = prod.name;
-    if (perNightEl) perNightEl.textContent = prod.perNight;
-    if (monthlyEl) monthlyEl.textContent = prod.monthly;
-    if (priceEl) { priceEl.dataset.v = prod.price; countUp(priceEl, prod.price, { money: true }); }
-    if (stamp) { stamp.style.transform = 'rotate(7deg) scale(1.12)'; setTimeout(function () { stamp.style.transform = 'rotate(7deg)'; }, 180); }
+    totalsEl.innerHTML = rows;
+  }
+
+  /* -------- per-judge summary (final slide) -------- */
+  function renderSummary() {
+    var list = document.getElementById('summaryList');
+    if (!list) return;
+    list.innerHTML = '';
+    for (var n = 1; n <= judgeCount; n++) {
+      var probs = problemsForJudge(n);
+      var li = document.createElement('li');
+      li.className = 'summary-row';
+      li.style.animationDelay = (0.1 + (n - 1) * 0.1) + 's';
+      var body;
+      if (probs.length === 0) {
+        body = '<span class="sr-pair generic"><span class="sr-feat">' +
+          'The complete Pod 5 system — every feature, end to end</span></span>';
+      } else {
+        body = probs.map(function (p) {
+          return '<span class="sr-pair">' +
+            '<span class="sr-said">' + SAID[p].charAt(0).toUpperCase() + SAID[p].slice(1) + '</span>' +
+            '<span class="sr-arrow">→</span>' +
+            '<span class="sr-feat">' + DECK.featureFor[p] + '</span></span>';
+        }).join('');
+      }
+      li.innerHTML =
+        '<span class="sr-judge">JUDGE ' + n + '</span>' +
+        '<span class="sr-body">' + body + '</span>';
+      list.appendChild(li);
+    }
   }
 
   /* -------- Problems slide interactivity -------- */
   function updateProblemUI() {
     stage.querySelectorAll('.prob-card').forEach(function (c) {
       c.classList.toggle('selected', isAssigned(c.dataset.problem));
+      c.classList.toggle('focused', c.dataset.problem === focusedProblem);
     });
     stage.querySelectorAll('.judge-chip').forEach(function (chip) {
       var on = assignments[chip.dataset.problem].has(parseInt(chip.dataset.judge, 10));
       chip.classList.toggle('on', on);
     });
+    // prominent per-card banner showing which judge(s) this problem belongs to
+    stage.querySelectorAll('.prob-assigned').forEach(function (el) {
+      var arr = judgesFor(el.dataset.assigned);
+      el.textContent = arr.length
+        ? (arr.length === 1 ? 'JUDGE ' + arr[0] : 'JUDGES ' + arr.join(' · '))
+        : '';
+    });
     if (!needsSummary) return;
     var assigned = PROBLEM_ORDER.filter(isAssigned);
     if (assigned.length === 0) {
-      needsSummary.textContent = 'Tap the judge(s) who mention each problem →';
+      needsSummary.innerHTML = '↑ ↓ pick a problem · press <b>1–' + judgeCount +
+        '</b> for the judge(s) who mention it';
     } else {
       var parts = assigned.map(function (p) {
         return DECK.problemLabels[p] + ' (' + judgesFor(p).map(function (n) { return 'J' + n; }).join(',') + ')';
@@ -285,20 +328,35 @@
     }
   }
 
+  // toggle a judge on a problem (shared by chip clicks and number keys)
+  function toggleJudge(p, n) {
+    if (!assignments[p] || n < 1 || n > judgeCount) return;
+    if (assignments[p].has(n)) assignments[p].delete(n); else assignments[p].add(n);
+    updateProblemUI();
+    // total slide count may change
+    var list = activeList();
+    counterEl.textContent = (list.indexOf(currentId) + 1) + ' / ' + list.length;
+    if (progressBar) progressBar.style.width = ((list.indexOf(currentId) + 1) / list.length * 100) + '%';
+  }
+
+  // move the keyboard focus between problem cards
+  function moveProblemFocus(delta) {
+    var i = PROBLEM_ORDER.indexOf(focusedProblem);
+    if (i < 0) i = 0;
+    focusedProblem = PROBLEM_ORDER[(i + delta + PROBLEM_ORDER.length) % PROBLEM_ORDER.length];
+    updateProblemUI();
+  }
+
   function bindProblemChips() {
     // delegated: chips are rebuilt whenever judgeCount changes
     stage.querySelectorAll('.prob-grid').forEach(function (grid) {
       grid.addEventListener('click', function (e) {
+        var card = e.target.closest('.prob-card');
+        if (!card) return;
+        focusedProblem = card.dataset.problem;   // clicking a card focuses it
         var chip = e.target.closest('.judge-chip');
-        if (!chip) return;
-        var p = chip.dataset.problem;
-        var n = parseInt(chip.dataset.judge, 10);
-        if (assignments[p].has(n)) assignments[p].delete(n); else assignments[p].add(n);
-        updateProblemUI();
-        // total slide count may change
-        var list = activeList();
-        counterEl.textContent = (list.indexOf(currentId) + 1) + ' / ' + list.length;
-        if (progressBar) progressBar.style.width = ((list.indexOf(currentId) + 1) / list.length * 100) + '%';
+        if (chip) toggleJudge(chip.dataset.problem, parseInt(chip.dataset.judge, 10));
+        else updateProblemUI();
       });
     });
   }
@@ -348,7 +406,7 @@
   function startPresentation() {
     judgeCount = clampJudges(parseInt(document.getElementById('judgeCount').value, 10));
     buildChips();
-    judgeTagEl.textContent = 'JUDGES: ' + judgeCount + (sectionLabel ? '  ·  ' + sectionLabel.toUpperCase() : '');
+    judgeTagEl.textContent = 'JUDGES: ' + judgeCount;
     setupEl.classList.add('hidden');
     started = true;
     currentId = 'title';
@@ -357,7 +415,8 @@
   }
   function restart() {
     PROBLEMS.forEach(function (p) { assignments[p].clear(); });
-    recapProd = 'pod5';
+    focusedProblem = 'wakeup';
+    judgeProduct = {};
     started = false;
     currentId = 'title';
     setupEl.classList.remove('hidden');
@@ -380,20 +439,19 @@
     });
     numEl.addEventListener('change', function () { numEl.value = clampJudges(parseInt(numEl.value, 10)); });
     document.getElementById('startBtn').addEventListener('click', function () {
-      sectionLabel = document.getElementById('sectionInput').value.trim();
       startPresentation();
     });
   }
 
-  /* -------- recap product toggle -------- */
+  /* -------- recap per-judge product toggle -------- */
   function bindRecapToggle() {
-    var toggle = document.getElementById('recapToggle');
-    if (!toggle) return;
-    toggle.addEventListener('click', function (e) {
-      var btn = e.target.closest('.prod-btn');
+    var listEl = document.getElementById('judgeProdList');
+    if (!listEl) return;
+    listEl.addEventListener('click', function (e) {
+      var btn = e.target.closest('.jp-btn');
       if (!btn) return;
-      recapProd = btn.dataset.prod;
-      updateRecapProduct();
+      judgeProduct[parseInt(btn.dataset.judge, 10)] = btn.dataset.prod;
+      renderJudgeProducts();
     });
   }
 
@@ -403,6 +461,29 @@
       // allow typing in the setup fields
       if (e.target && e.target.tagName === 'INPUT') {
         if (e.key === 'Enter') document.getElementById('startBtn').click();
+        return;
+      }
+      // Problems slide: arrows pick a problem, number keys assign judges to it
+      if (started && currentId === 'problems') {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          moveProblemFocus(e.key === 'ArrowUp' ? -1 : 1);
+          return;
+        }
+        if (/^[1-8]$/.test(e.key)) {
+          e.preventDefault();
+          toggleJudge(focusedProblem, parseInt(e.key, 10));
+          return;
+        }
+      }
+      // Recap slide: number keys flip that judge's product (Pod 5 ↔ Ultra)
+      if (started && currentId === 'recap' && /^[1-8]$/.test(e.key)) {
+        var jn = parseInt(e.key, 10);
+        if (jn <= judgeCount) {
+          e.preventDefault();
+          judgeProduct[jn] = judgeProduct[jn] === 'ultra' ? 'pod5' : 'ultra';
+          renderJudgeProducts();
+        }
         return;
       }
       switch (e.key) {

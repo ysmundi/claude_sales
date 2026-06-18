@@ -7,7 +7,6 @@ window.DECK = {
   order: [
     'title',
     'problems',
-    'agenda',          // always shown: the personalized plan reveal
     'sol-wakeup',      // shown only if problem "wakeup" assigned to a judge
     'sol-temperature', // shown only if problem "temperature" assigned
     'sol-energy',      // shown only if problem "energy" assigned
@@ -16,7 +15,8 @@ window.DECK = {
     'ultra',
     'whyus',
     'recap',           // always shown: personalized recap + close-the-sale
-    'close'
+    'close',
+    'summary'          // always shown: per-judge tailored recap
   ],
   // conditional solution slides → the problem that activates them
   conditional: {

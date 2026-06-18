@@ -25,9 +25,6 @@
         <button type="button" class="step-btn" data-step="1" aria-label="More judges">+</button>
       </div>
 
-      <label class="field-label" for="sectionInput">Section / Room <span class="opt">(optional)</span></label>
-      <input id="sectionInput" class="text-input" type="text" placeholder="e.g. Section A" autocomplete="off" />
-
       <button id="startBtn" class="start-btn">Start Presentation →</button>
 
       <p class="setup-hint">
@@ -62,6 +59,7 @@
           <div class="prob-card" data-problem="wakeup">
             <span class="prob-arrow">↓</span>
             <span class="prob-title">Can't Wake Up?</span>
+            <span class="prob-assigned" data-assigned="wakeup"></span>
             <span class="prob-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="38" r="17"/><path d="M32 38V28M32 38l9 5"/><path d="M14 16l8-6M50 16l-8-6"/></g><text x="40" y="16" font-size="13" font-weight="800" fill="currentColor" stroke="none">z<tspan font-size="10">z</tspan></text></svg>
             </span>
@@ -71,6 +69,7 @@
           <div class="prob-card" data-problem="temperature">
             <span class="prob-arrow">↓</span>
             <span class="prob-title">Different temperature preferences?</span>
+            <span class="prob-assigned" data-assigned="temperature"></span>
             <span class="prob-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 46h48M12 46v-8h40v8M20 38v-6h24v6"/><circle cx="20" cy="14" r="5"/><path d="M20 5v3M20 20v3M11 14h3M26 14h3M14 8l2 2M26 8l-2 2"/><path d="M44 9v10M40 12l4-4 4 4M40 16l4 4 4-4"/></g></svg>
             </span>
@@ -80,6 +79,7 @@
           <div class="prob-card" data-problem="energy">
             <span class="prob-arrow">↓</span>
             <span class="prob-title">Wake up tired?</span>
+            <span class="prob-assigned" data-assigned="energy"></span>
             <span class="prob-icon" aria-hidden="true">
               <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="13" r="5"/><path d="M34 20c-6 4-9 7-12 9M22 29l8 5 2 9M30 34l9-2M22 43l-5 9M32 43l3 9"/><rect x="40" y="10" width="14" height="8" rx="1.5"/><path d="M54 12v4"/><rect x="42" y="12" width="4" height="4" fill="currentColor" stroke="none"/></g></svg>
             </span>
@@ -87,14 +87,6 @@
             <span class="prob-check">✓</span>
           </div>
         </div>
-      </section>
-
-      <!-- 2b. AGENDA — the personalized plan reveal -->
-      <section class="slide slide-agenda" data-slide="agenda">
-        <h1 class="head center" data-anim>YOUR <span class="orange">PERSONALIZED</span> PLAN</h1>
-        <p class="agenda-sub" data-anim>Built live from what your panel told us</p>
-        <ul class="agenda-list" id="agendaList"><!-- filled by JS --></ul>
-        <p class="agenda-always" data-anim>Always included: Key Features · Pricing &amp; Options · Why Us · Your Plan</p>
       </section>
 
       <!-- 3. SOLUTION: SMART WAKE-UP (wakeup) -->
@@ -243,24 +235,16 @@
 
       <!-- 10. RECAP — personalized plan + close the sale -->
       <section class="slide slide-recap" data-slide="recap">
-        <h1 class="head center" data-anim>YOUR <span class="orange">POD 5</span> PLAN</h1>
+        <h1 class="head center" data-anim>YOUR <span class="orange">PANEL'S</span> PLAN</h1>
         <div class="recap-body">
           <div class="recap-left">
             <ul class="recap-list" id="recapList"><!-- filled by JS --></ul>
           </div>
           <div class="recap-right" data-anim>
-            <div class="recap-prod-toggle" id="recapToggle">
-              <button type="button" class="prod-btn active" data-prod="pod5">POD 5</button>
-              <button type="button" class="prod-btn" data-prod="ultra">POD 5 ULTRA</button>
-            </div>
-            <div class="recap-card">
-              <span class="recap-stamp" id="recapStamp">SELECTED ✓</span>
-              <span class="recap-prod-name" id="recapName">POD 5</span>
-              <span class="recap-price" id="recapPrice" data-v="2999">$0</span>
-              <span class="recap-pernight" id="recapPerNight">~$2 / night over 5 years</span>
-              <span class="recap-monthly" id="recapMonthly">$81 / mo financing</span>
-              <div class="recap-trial">30-DAY RISK-FREE TRIAL &amp; RETURN</div>
-            </div>
+            <p class="recap-right-title">Each judge's Pod — tap, or press <b>1–N</b> to flip</p>
+            <ul class="judge-prod-list" id="judgeProdList"><!-- filled by JS --></ul>
+            <div class="recap-totals" id="recapTotals"><!-- filled by JS --></div>
+            <div class="recap-trial">30-DAY RISK-FREE TRIAL &amp; RETURN</div>
             <p class="recap-followup">Plus ongoing sleep insights &amp; software updates — we grow with your sleep.</p>
           </div>
         </div>
@@ -273,6 +257,13 @@
         <img class="close-bed" src="assets/close_bed.png" alt="Pod 5 bed" />
         <span class="ribbon ribbon-1">$81/Month Installment</span>
         <span class="ribbon ribbon-2">30-Day Free Trial &amp; Return</span>
+      </section>
+
+      <!-- 12. JUDGE SUMMARY — per-judge tailored recap -->
+      <section class="slide slide-summary" data-slide="summary">
+        <h1 class="head center orange">YOUR PANEL, SOLVED</h1>
+        <p class="summary-sub">What each judge raised — and the Pod 5 answer</p>
+        <ul class="summary-list" id="summaryList"><!-- filled by JS --></ul>
       </section>
 
     </div><!-- /stage -->
