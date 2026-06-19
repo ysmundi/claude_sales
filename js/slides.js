@@ -14,7 +14,6 @@ window.DECK = {
     'pricing',
     'ultra',
     'whyus',
-    'recap',           // always shown: personalized recap + close-the-sale
     'close',
     'summary'          // always shown: per-judge tailored recap
   ],

@@ -40,13 +40,20 @@
   var focusedProblem = 'wakeup';   // which problem card the number keys act on
   var judgeCount = 2;
   var started = false;
-  // per-judge product pick on the recap slide: judge number -> 'pod5' | 'ultra'
-  var judgeProduct = {};
+  // judge number -> entered last name (used everywhere instead of "Judge 1")
+  var judgeNames = {};
 
   function judgesFor(problem) {
     return Array.from(assignments[problem]).sort(function (a, b) { return a - b; });
   }
   function isAssigned(problem) { return assignments[problem].size > 0; }
+
+  /* -------- judge name helpers -------- */
+  function judgeName(n) { return (judgeNames[n] || '').trim(); }
+  // short token for a judge: their last name (uppercased) or "J3" fallback
+  function judgeToken(n) { var nm = judgeName(n); return nm ? nm.toUpperCase() : ('J' + n); }
+  // full label for a judge: "JUDGE SMITH" or "JUDGE 3" fallback
+  function judgeLabel(n) { var nm = judgeName(n); return 'JUDGE ' + (nm ? nm.toUpperCase() : n); }
   function problemsForJudge(n) {
     return PROBLEM_ORDER.filter(function (p) { return assignments[p].has(n); });
   }
@@ -103,7 +110,7 @@
 
   /* -------- judge label helpers -------- */
   function judgeListLabel(arr) {
-    return arr.map(function (n) { return n; }).join(' · ');
+    return arr.map(function (n) { return judgeName(n) ? judgeName(n).toUpperCase() : n; }).join(' · ');
   }
   function forJudgesLabel(arr) {
     return (arr.length === 1 ? 'FOR JUDGE ' : 'FOR JUDGES ') + judgeListLabel(arr);
@@ -118,7 +125,7 @@
         var chip = document.createElement('button');
         chip.type = 'button';
         chip.className = 'judge-chip';
-        chip.textContent = 'J' + n;
+        chip.textContent = judgeToken(n);
         chip.dataset.judge = n;
         chip.dataset.problem = problem;
         box.appendChild(chip);
@@ -144,7 +151,6 @@
     if (progressBar) progressBar.style.width = (pos / list.length * 100) + '%';
 
     // per-slide content + entry hooks
-    if (currentId === 'recap') renderRecap();
     if (currentId === 'summary') renderSummary();
     if (COND[currentId]) renderBadge(currentId);
     updateProblemUI();
@@ -193,82 +199,6 @@
       '<span class="sb-judges">' + forJudgesLabel(arr) + '</span>';
   }
 
-  /* -------- recap (plan + close the sale) -------- */
-  function renderRecap() {
-    var list = document.getElementById('recapList');
-    if (list) {
-      list.innerHTML = '';
-      var assigned = PROBLEM_ORDER.filter(isAssigned);
-      if (assigned.length === 0) {
-        var g = document.createElement('li');
-        g.className = 'recap-row generic';
-        g.innerHTML = '<span class="rr-said">We’ll set you up with the complete Pod 5 system.</span>';
-        list.appendChild(g);
-      } else {
-        assigned.forEach(function (p, i) {
-          var arr = judgesFor(p);
-          var row = document.createElement('li');
-          row.className = 'recap-row';
-          row.style.animationDelay = (0.1 + i * 0.1) + 's';
-          row.innerHTML =
-            '<span class="rr-said">You said: ' + SAID[p].charAt(0).toUpperCase() + SAID[p].slice(1) +
-            '<small>' + forJudgesLabel(arr) + '</small></span>' +
-            '<span class="rr-arrow">→</span>' +
-            '<span class="rr-solved">Solved by ' + DECK.featureFor[p] + '</span>';
-          list.appendChild(row);
-        });
-      }
-    }
-    renderJudgeProducts();
-  }
-
-  // make sure every current judge has a product (default Pod 5)
-  function ensureJudgeProducts() {
-    for (var n = 1; n <= judgeCount; n++) {
-      if (judgeProduct[n] !== 'pod5' && judgeProduct[n] !== 'ultra') judgeProduct[n] = 'pod5';
-    }
-  }
-
-  // build the per-judge product toggles + the combined totals
-  function renderJudgeProducts() {
-    ensureJudgeProducts();
-    var listEl = document.getElementById('judgeProdList');
-    if (listEl) {
-      listEl.innerHTML = '';
-      for (var n = 1; n <= judgeCount; n++) {
-        var sel = judgeProduct[n];
-        var li = document.createElement('li');
-        li.className = 'jp-row';
-        li.style.animationDelay = (0.08 + (n - 1) * 0.07) + 's';
-        li.innerHTML =
-          '<span class="jp-judge">JUDGE ' + n + '</span>' +
-          '<div class="jp-toggle">' +
-            '<button type="button" class="jp-btn' + (sel === 'pod5' ? ' active' : '') +
-              '" data-judge="' + n + '" data-prod="pod5">POD 5</button>' +
-            '<button type="button" class="jp-btn' + (sel === 'ultra' ? ' active' : '') +
-              '" data-judge="' + n + '" data-prod="ultra">POD 5 ULTRA</button>' +
-          '</div>';
-        listEl.appendChild(li);
-      }
-    }
-    renderTotals();
-  }
-
-  function renderTotals() {
-    var totalsEl = document.getElementById('recapTotals');
-    if (!totalsEl) return;
-    var counts = { pod5: 0, ultra: 0 };
-    for (var n = 1; n <= judgeCount; n++) counts[judgeProduct[n]]++;
-    var rows = '';
-    ['pod5', 'ultra'].forEach(function (key) {
-      if (!counts[key]) return;
-      var prod = DECK.products[key];
-      rows += '<div class="rt-line"><span>' + counts[key] + '× ' + prod.name + '</span>' +
-        '<span>' + prod.priceLabel + ' each</span></div>';
-    });
-    totalsEl.innerHTML = rows;
-  }
-
   /* -------- per-judge summary (final slide) -------- */
   function renderSummary() {
     var list = document.getElementById('summaryList');
@@ -292,7 +222,7 @@
         }).join('');
       }
       li.innerHTML =
-        '<span class="sr-judge">JUDGE ' + n + '</span>' +
+        '<span class="sr-judge">' + judgeLabel(n) + '</span>' +
         '<span class="sr-body">' + body + '</span>';
       list.appendChild(li);
     }
@@ -312,17 +242,16 @@
     stage.querySelectorAll('.prob-assigned').forEach(function (el) {
       var arr = judgesFor(el.dataset.assigned);
       el.textContent = arr.length
-        ? (arr.length === 1 ? 'JUDGE ' + arr[0] : 'JUDGES ' + arr.join(' · '))
+        ? (arr.length === 1 ? 'JUDGE ' + judgeToken(arr[0]) : 'JUDGES ' + judgeListLabel(arr))
         : '';
     });
     if (!needsSummary) return;
     var assigned = PROBLEM_ORDER.filter(isAssigned);
     if (assigned.length === 0) {
-      needsSummary.innerHTML = '↑ ↓ pick a problem · press <b>1–' + judgeCount +
-        '</b> for the judge(s) who mention it';
+      needsSummary.innerHTML = 'Tap the judge(s) below who mention each problem';
     } else {
       var parts = assigned.map(function (p) {
-        return DECK.problemLabels[p] + ' (' + judgesFor(p).map(function (n) { return 'J' + n; }).join(',') + ')';
+        return DECK.problemLabels[p] + ' (' + judgeListLabel(judgesFor(p)) + ')';
       });
       needsSummary.innerHTML = 'Focusing on: <b>' + parts.join(' · ') + '</b>';
     }
@@ -416,17 +345,49 @@
   function restart() {
     PROBLEMS.forEach(function (p) { assignments[p].clear(); });
     focusedProblem = 'wakeup';
-    judgeProduct = {};
     started = false;
     currentId = 'title';
     setupEl.classList.remove('hidden');
     updateProblemUI();
   }
 
+  // return to the setup overlay from slide 1 WITHOUT wiping assignments/names
+  function backToSetup() {
+    started = false;
+    currentId = 'title';
+    buildNameInputs();
+    setupEl.classList.remove('hidden');
+  }
+
   function clampJudges(n) {
     if (isNaN(n) || n < 1) return 1;
     if (n > 8) return 8;
     return n;
+  }
+
+  /* -------- judge-name inputs on the setup overlay -------- */
+  function buildNameInputs() {
+    var box = document.getElementById('judgeNames');
+    if (!box) return;
+    var count = clampJudges(parseInt(document.getElementById('judgeCount').value, 10));
+    box.innerHTML = '';
+    for (var n = 1; n <= count; n++) {
+      var row = document.createElement('div');
+      row.className = 'judge-name-row';
+      var pre = document.createElement('span');
+      pre.className = 'jn-prefix';
+      pre.textContent = 'Judge';
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'text-input jn-input';
+      inp.dataset.judge = n;
+      inp.placeholder = 'last name';
+      inp.autocomplete = 'off';
+      inp.value = judgeNames[n] || '';
+      row.appendChild(pre);
+      row.appendChild(inp);
+      box.appendChild(row);
+    }
   }
 
   /* -------- setup screen wiring -------- */
@@ -436,23 +397,22 @@
       var btn = e.target.closest('.step-btn');
       if (!btn) return;
       numEl.value = clampJudges(parseInt(numEl.value, 10) + parseInt(btn.dataset.step, 10));
+      buildNameInputs();
     });
-    numEl.addEventListener('change', function () { numEl.value = clampJudges(parseInt(numEl.value, 10)); });
+    numEl.addEventListener('change', function () {
+      numEl.value = clampJudges(parseInt(numEl.value, 10));
+      buildNameInputs();
+    });
+    document.getElementById('judgeNames').addEventListener('input', function (e) {
+      var inp = e.target.closest('.jn-input');
+      if (!inp) return;
+      judgeNames[parseInt(inp.dataset.judge, 10)] = inp.value;
+    });
     document.getElementById('startBtn').addEventListener('click', function () {
       startPresentation();
     });
-  }
-
-  /* -------- recap per-judge product toggle -------- */
-  function bindRecapToggle() {
-    var listEl = document.getElementById('judgeProdList');
-    if (!listEl) return;
-    listEl.addEventListener('click', function (e) {
-      var btn = e.target.closest('.jp-btn');
-      if (!btn) return;
-      judgeProduct[parseInt(btn.dataset.judge, 10)] = btn.dataset.prod;
-      renderJudgeProducts();
-    });
+    var back = document.getElementById('backToSetup');
+    if (back) back.addEventListener('click', backToSetup);
   }
 
   /* -------- keyboard / clicker -------- */
@@ -476,16 +436,6 @@
           return;
         }
       }
-      // Recap slide: number keys flip that judge's product (Pod 5 ↔ Ultra)
-      if (started && currentId === 'recap' && /^[1-8]$/.test(e.key)) {
-        var jn = parseInt(e.key, 10);
-        if (jn <= judgeCount) {
-          e.preventDefault();
-          judgeProduct[jn] = judgeProduct[jn] === 'ultra' ? 'pod5' : 'ultra';
-          renderJudgeProducts();
-        }
-        return;
-      }
       switch (e.key) {
         case 'ArrowRight': case ' ': case 'PageDown': case 'Enter':
           if (started) { e.preventDefault(); next(); } break;
@@ -505,9 +455,9 @@
   /* -------- init -------- */
   injectChrome();
   buildChips();
+  buildNameInputs();
   bindProblemChips();
   bindSetup();
-  bindRecapToggle();
   bindKeys();
   fitStage();
   updateProblemUI();

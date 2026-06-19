@@ -25,10 +25,13 @@
         <button type="button" class="step-btn" data-step="1" aria-label="More judges">+</button>
       </div>
 
+      <label class="field-label">Judges' last names <span class="opt">(optional)</span></label>
+      <div class="judge-names" id="judgeNames"><!-- inputs built by JS --></div>
+
       <button id="startBtn" class="start-btn">Start Presentation →</button>
 
       <p class="setup-hint">
-        Controls: <b>→ / Space</b> next · <b>←</b> back · <b>F</b> fullscreen · <b>R</b> restart · <b>H</b> hide counter
+        Tap the on-screen <b>‹ ›</b> arrows to move · tap a judge to assign · <b>‹ Judges</b> on slide 1 returns here
       </p>
     </div>
   </div>
@@ -49,6 +52,7 @@
           </div>
         </div>
         <img class="title-product" src="assets/title_product.png" alt="Pod 5 cover and hub" />
+        <button type="button" class="back-to-setup" id="backToSetup">‹ Judges &amp; Setup</button>
       </section>
 
       <!-- 2. PROBLEMS (interactive) -->
@@ -231,23 +235,6 @@
             <tr><td class="rowlab">Low Maintenance</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td></tr>
           </tbody>
         </table>
-      </section>
-
-      <!-- 10. RECAP — personalized plan + close the sale -->
-      <section class="slide slide-recap" data-slide="recap">
-        <h1 class="head center" data-anim>YOUR <span class="orange">PANEL'S</span> PLAN</h1>
-        <div class="recap-body">
-          <div class="recap-left">
-            <ul class="recap-list" id="recapList"><!-- filled by JS --></ul>
-          </div>
-          <div class="recap-right" data-anim>
-            <p class="recap-right-title">Each judge's Pod — tap, or press <b>1–N</b> to flip</p>
-            <ul class="judge-prod-list" id="judgeProdList"><!-- filled by JS --></ul>
-            <div class="recap-totals" id="recapTotals"><!-- filled by JS --></div>
-            <div class="recap-trial">30-DAY RISK-FREE TRIAL &amp; RETURN</div>
-            <p class="recap-followup">Plus ongoing sleep insights &amp; software updates — we grow with your sleep.</p>
-          </div>
-        </div>
       </section>
 
       <!-- 11. CLOSE -->
