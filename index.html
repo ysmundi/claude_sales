@@ -4,7 +4,422 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pod 5 — Eight Sleep | FBLA Sales Presentation</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+/* ===================== FONTS (bundled, offline) ===================== */
+@font-face {
+  font-family: 'Archivo';
+  src: url('archivo-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face { font-family:'Poppins'; src:url('poppins-400.woff2') format('woff2'); font-weight:400; font-display:swap; }
+@font-face { font-family:'Poppins'; src:url('poppins-500.woff2') format('woff2'); font-weight:500; font-display:swap; }
+@font-face { font-family:'Poppins'; src:url('poppins-600.woff2') format('woff2'); font-weight:600; font-display:swap; }
+@font-face { font-family:'Poppins'; src:url('poppins-700.woff2') format('woff2'); font-weight:700; font-display:swap; }
+
+/* ===================== TOKENS ===================== */
+:root{
+  --bg:#FAFAFA;
+  --ink:#141414;
+  --orange:#E74E1A;
+  --card:#E7E5E2;
+  --card-2:#DEDCD9;
+  --muted:#6f6f6f;
+  --display:'Archivo','Poppins',Arial,sans-serif;
+  --body:'Poppins',Arial,Helvetica,sans-serif;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+html,body{ height:100%; }
+body{
+  font-family:var(--body);
+  background:#0c0c0c;
+  color:var(--ink);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ===================== STAGE / SCALING ===================== */
+.viewport{ position:fixed; inset:0; background:#0c0c0c; }
+.stage{
+  position:absolute; top:50%; left:50%;
+  width:1440px; height:810px;
+  transform:translate(-50%,-50%);
+  transform-origin:center center;
+  background:var(--bg);
+  overflow:hidden;
+}
+
+/* ===================== SLIDES ===================== */
+.slide{
+  position:absolute; inset:0;
+  padding:64px 80px;
+  opacity:0; visibility:hidden;
+  transition:opacity .45s ease;
+  display:flex; flex-direction:column;
+}
+.slide.active{ opacity:1; visibility:visible; }
+
+/* full-bleed original Canva slide image */
+.slide-image{ padding:0; }
+.slide-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+/* chrome injected by JS: top-left FBLA tag + top-right logo */
+.chrome-tl{ position:absolute; top:46px; left:80px; line-height:1.15; z-index:5; }
+.chrome-tl .fbla{ color:var(--orange); font-weight:700; font-size:21px; letter-spacing:.5px; }
+.chrome-tl .school{ color:var(--ink); font-weight:600; font-size:15px; letter-spacing:3px; }
+.chrome-tr{ position:absolute; top:40px; right:80px; z-index:5; display:flex; align-items:center; gap:10px; }
+
+/* Eight Sleep logo */
+.eight{
+  font-family:var(--display); font-weight:900; color:var(--ink);
+  font-size:46px; line-height:.8; display:inline-block;
+  transform:scaleX(.82); letter-spacing:-2px;
+}
+.wordmark{ font-family:var(--display); font-weight:800; font-size:21px; line-height:.95; letter-spacing:1px; color:var(--ink); }
+.eight.big{ font-size:58px; }
+.wordmark.big{ font-size:27px; }
+
+/* ===================== TYPOGRAPHY ===================== */
+.head{
+  font-family:var(--display); font-weight:900; text-transform:uppercase;
+  font-size:88px; line-height:.92; letter-spacing:-1px; color:var(--ink);
+}
+.head.center{ text-align:center; }
+.head.right{ text-align:right; }
+.mega{
+  font-family:var(--display); font-weight:900; text-transform:uppercase;
+  font-size:230px; line-height:.82; letter-spacing:-6px; color:var(--orange);
+}
+.orange{ color:var(--orange); }
+
+.pill{
+  display:inline-block; background:var(--card); color:var(--ink);
+  font-weight:700; font-size:30px; padding:14px 30px; border-radius:40px; margin-top:26px;
+}
+.sol-list{ list-style:none; margin-top:26px; }
+.sol-list li{ font-size:23px; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:#2b2b2b; margin:10px 0; padding-left:0; }
+.right-list{ text-align:right; }
+
+/* ===================== SETUP OVERLAY ===================== */
+.setup{
+  position:fixed; inset:0; z-index:50;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+}
+.setup.hidden{ display:none; }
+.setup-card{
+  width:560px; max-width:92vw; text-align:center; padding:20px;
+}
+.setup-logo{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:18px; }
+.setup-title{ font-family:var(--display); font-weight:900; font-size:96px; color:var(--orange); line-height:.9; letter-spacing:-3px; }
+.setup-sub{ color:var(--muted); font-weight:500; margin:6px 0 38px; font-size:16px; letter-spacing:.3px; }
+.field-label{ display:block; text-align:left; font-weight:600; font-size:16px; margin:18px 0 10px; color:var(--ink); }
+.field-label .opt{ color:var(--muted); font-weight:400; }
+.judge-stepper{ display:flex; gap:12px; align-items:stretch; justify-content:center; }
+.step-btn{
+  width:64px; font-family:var(--display); font-weight:800; font-size:34px;
+  border:2px solid var(--card-2); background:#fff; color:var(--ink);
+  border-radius:16px; cursor:pointer; transition:.15s;
+}
+.step-btn:hover{ border-color:var(--orange); color:var(--orange); }
+.judge-num{
+  flex:1; text-align:center; font-family:var(--display); font-weight:800; font-size:40px;
+  padding:14px 0; border:2px solid var(--card-2); background:#fff; color:var(--ink);
+  border-radius:16px; -moz-appearance:textfield;
+}
+.judge-num:focus{ outline:none; border-color:var(--orange); }
+.judge-num::-webkit-outer-spin-button,
+.judge-num::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.text-input{
+  width:100%; padding:15px 18px; font-family:var(--body); font-size:17px;
+  border:2px solid var(--card-2); border-radius:14px; background:#fff; color:var(--ink);
+}
+.text-input:focus{ outline:none; border-color:var(--orange); }
+
+/* per-judge last-name inputs */
+.judge-names{ display:flex; flex-direction:column; gap:10px; }
+.judge-name-row{ display:flex; align-items:center; gap:12px; }
+.jn-prefix{
+  flex:none; min-width:58px; text-align:left; font-family:var(--display); font-weight:800;
+  font-size:16px; letter-spacing:.4px; color:var(--orange);
+}
+.jn-input{ flex:1; padding:12px 16px; font-size:16px; }
+.start-btn{
+  width:100%; margin-top:32px; padding:18px; font-family:var(--display); font-weight:800;
+  font-size:22px; letter-spacing:.5px; color:#fff; background:var(--ink); border:none;
+  border-radius:16px; cursor:pointer; transition:.15s;
+}
+.start-btn:hover{ background:var(--orange); }
+.setup-hint{ margin-top:26px; color:var(--muted); font-size:13px; line-height:1.7; }
+.setup-hint b{ color:var(--ink); }
+
+/* ===================== SLIDE 1: TITLE ===================== */
+.slide-title .corner{ position:absolute; }
+.corner.tl{ top:46px; left:80px; line-height:1.2; }
+.corner.tl .fbla{ color:var(--orange); font-weight:700; font-size:24px; letter-spacing:.5px; }
+.corner.tl .school{ color:var(--ink); font-weight:600; font-size:16px; letter-spacing:3px; }
+.corner.tr.prepared{ top:46px; right:80px; text-align:right; font-size:16px; letter-spacing:2px; color:var(--ink); line-height:1.5; }
+.corner.tr.prepared b{ font-weight:700; }
+.title-wrap{ position:absolute; left:80px; top:120px; }
+.title-wrap .mega{ font-size:300px; letter-spacing:-10px; }
+.title-logo{ display:flex; align-items:center; gap:14px; margin-top:6px; margin-left:6px; }
+.title-product{ position:absolute; right:70px; bottom:80px; width:470px; height:auto; }
+
+/* ===================== SLIDE 2: PROBLEMS ===================== */
+.slide-problems .head{ margin-top:6px; }
+.needs-summary{ text-align:center; color:var(--muted); font-weight:600; font-size:20px; margin:18px 0 4px; min-height:26px; }
+.prob-grid{ display:flex; gap:34px; justify-content:center; align-items:stretch; margin-top:30px; flex:1; }
+.prob-card{
+  position:relative; width:340px; background:var(--card); border:3px solid transparent;
+  border-radius:26px; padding:70px 28px 36px; cursor:pointer; font-family:var(--body);
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  transition:.18s; color:var(--ink);
+}
+.prob-card:hover{ transform:translateY(-4px); }
+.prob-arrow{
+  position:absolute; top:-30px; left:50%; transform:translateX(-50%);
+  width:64px; height:64px; background:#fff; color:var(--orange); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+.prob-title{ font-weight:700; font-size:30px; text-align:center; line-height:1.2; }
+.prob-icon{ color:var(--ink); margin-top:30px; height:104px; display:flex; align-items:center; justify-content:center; }
+.prob-icon img{ height:100px; width:auto; display:block; }
+.prob-check{
+  position:absolute; top:16px; right:18px; width:36px; height:36px; border-radius:50%;
+  background:var(--orange); color:#fff; font-size:20px; font-weight:800;
+  display:flex; align-items:center; justify-content:center; opacity:0; transform:scale(.5); transition:.18s;
+}
+.prob-card.selected{ border-color:var(--orange); background:#fff; box-shadow:0 8px 26px rgba(231,78,26,.18); }
+.prob-card.selected .prob-title{ color:var(--orange); }
+.prob-card.selected .prob-check{ opacity:1; transform:scale(1); }
+/* prominent "which judge(s)" banner under each problem title */
+.prob-assigned{
+  display:none; margin-top:12px; font-family:var(--display); font-weight:800;
+  font-size:18px; letter-spacing:.6px; color:#fff; background:var(--orange);
+  padding:8px 18px; border-radius:22px; box-shadow:0 6px 16px rgba(231,78,26,.3);
+}
+.prob-card.selected .prob-assigned{ display:inline-block; animation:pop .35s cubic-bezier(.2,.8,.2,1) both; }
+/* keyboard focus ring — which problem the number keys act on */
+.prob-card.focused{ outline:3px solid var(--orange); outline-offset:5px; transform:translateY(-4px); }
+.prob-card.focused .judge-chip{ border-color:var(--orange); }
+
+/* per-card judge chips */
+.prob-judges{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:24px; min-height:38px; }
+.judge-chip{
+  font-family:var(--display); font-weight:800; font-size:16px; letter-spacing:.5px;
+  min-width:42px; padding:8px 10px; border-radius:12px; cursor:pointer;
+  border:2px solid var(--card-2); background:#fff; color:var(--muted); transition:.14s;
+}
+.judge-chip:hover{ border-color:var(--orange); color:var(--orange); }
+.judge-chip.on{ background:var(--orange); border-color:var(--orange); color:#fff; transform:scale(1.14); box-shadow:0 4px 12px rgba(231,78,26,.32); }
+
+/* ===================== SOLUTION SLIDES ===================== */
+.slide-solution{ flex-direction:row; align-items:center; gap:50px; }
+.sol-left,.sol-right{ flex:1; display:flex; flex-direction:column; }
+.sol-right.end{ align-items:flex-end; text-align:right; }
+.sol-right.end .pill{ align-self:flex-end; }
+
+/* wake-up media */
+.wake-media{ position:relative; height:100%; }
+.media-bed{ position:absolute; right:0; top:90px; width:560px; border-radius:18px; box-shadow:0 14px 40px rgba(0,0,0,.18); }
+.media-phone{ position:absolute; left:0; bottom:80px; width:300px; border-radius:22px; box-shadow:0 14px 40px rgba(0,0,0,.25); }
+
+/* temperature media */
+.temp-media{ position:relative; height:100%; }
+.temp-couple{ position:absolute; left:0; top:60px; width:380px; border-radius:14px; box-shadow:0 12px 34px rgba(0,0,0,.18); }
+.temp-tubes{ position:absolute; left:40px; top:300px; width:260px; border-radius:14px; box-shadow:0 12px 34px rgba(0,0,0,.16); }
+.temp-mattress{ position:absolute; left:200px; bottom:40px; width:360px; }
+/* temperature heading is long — keep it from overflowing into the media */
+.slide[data-slide="sol-temperature"] .head{ font-size:62px; }
+
+/* chart */
+.chart-wrap{ height:100%; justify-content:center; }
+.chart-title{ font-weight:600; font-size:26px; letter-spacing:1px; margin-bottom:22px; text-align:center; }
+.chart{ display:flex; gap:18px; height:430px; }
+.y-axis{ display:flex; flex-direction:column; justify-content:space-between; font-weight:600; font-size:24px; color:#333; padding-bottom:42px; }
+.bars{ flex:1; display:flex; gap:46px; align-items:flex-end; border-left:2px solid #cdcdcd; padding-left:30px; }
+.bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+.bar{
+  position:relative;
+  width:135px; background:var(--orange); border-radius:14px 14px 0 0;
+  height:0; transition:height 1.1s cubic-bezier(.2,.8,.2,1);
+}
+.bar-pct{
+  position:absolute; top:-40px; left:50%; transform:translateX(-50%);
+  font-family:var(--display); font-weight:900; font-size:30px; color:var(--ink); white-space:nowrap;
+}
+.bar-label{ margin-top:14px; font-weight:600; font-size:24px; }
+
+/* solution-slide "why this slide is here" badge */
+.sol-badge{
+  position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:6;
+  display:flex; align-items:center; gap:14px; max-width:90%;
+  background:#fff; color:var(--ink); padding:12px 16px 12px 22px; border-radius:40px;
+  border:3px solid var(--orange); font-weight:600; font-size:19px; letter-spacing:.2px;
+  text-align:center; box-shadow:0 10px 30px rgba(231,78,26,.22);
+}
+.sol-badge:empty{ display:none; }
+.sol-badge .sb-for{
+  font-family:var(--display); font-weight:800; font-size:15px; letter-spacing:1px;
+  color:var(--orange); white-space:nowrap;
+}
+.sol-badge .sb-mention{ color:#444; }
+.sol-badge .sb-mention b{ color:var(--ink); font-weight:800; }
+.sol-badge .sb-judges{
+  background:var(--orange); color:#fff; font-family:var(--display); font-weight:900;
+  font-size:20px; letter-spacing:.6px; padding:8px 18px; border-radius:24px; white-space:nowrap;
+}
+
+/* ===================== KEY FEATURES ===================== */
+.slide-features .head{ margin-bottom:10px; }
+.feat-grid{ display:flex; gap:40px; justify-content:center; align-items:flex-start; flex:1; margin-top:20px; }
+.feat{ position:relative; width:360px; display:flex; flex-direction:column; align-items:center; }
+.feat-icon{
+  width:150px; height:150px; border-radius:50%; background:var(--bg); overflow:hidden;
+  display:flex; align-items:center; justify-content:center; color:var(--ink); z-index:2;
+}
+.feat-icon img{ width:142px; height:142px; object-fit:contain; display:block; }
+.feat-label{
+  margin-top:-66px; padding:90px 24px 40px; background:var(--card); border-radius:20px;
+  font-weight:700; font-size:24px; text-transform:uppercase; text-align:center; color:var(--orange);
+  width:100%; min-height:230px; display:flex; align-items:flex-end; justify-content:center; line-height:1.25;
+}
+
+/* ===================== PRICING ===================== */
+.slide-pricing{ align-items:center; }
+.price-hero{ flex:1; display:flex; align-items:center; justify-content:center; gap:70px; }
+.price-img{ width:460px; }
+.price-tag{ display:flex; flex-direction:column; gap:6px; }
+.price-name{ font-family:var(--display); font-weight:900; font-size:80px; color:var(--ink); letter-spacing:-2px; }
+.price-amt{ font-family:var(--display); font-weight:900; font-size:120px; color:var(--orange); letter-spacing:-4px; line-height:.9; }
+.price-note{ font-weight:500; font-size:20px; color:var(--muted); margin-top:8px; max-width:380px; }
+
+/* ===================== ULTRA ===================== */
+.slide-ultra .head{ font-size:58px; }
+.ultra-grid{ flex:1; display:flex; align-items:center; gap:34px; margin-top:6px; }
+.ultra-base{ width:330px; text-align:center; }
+.ultra-base img{ width:240px; }
+.ultra-base-tag{ background:var(--card); border-radius:18px; padding:18px; margin-top:10px; }
+.ultra-base-tag b{ font-family:var(--display); font-weight:900; font-size:44px; color:var(--ink); display:block; }
+.ultra-base-tag span{ color:var(--muted); font-weight:600; font-size:20px; }
+.ultra-card{ flex:1; position:relative; background:var(--card); border:3px solid var(--orange); border-radius:28px; padding:40px 44px; }
+.ultra-img{ position:absolute; right:40px; top:-70px; width:340px; }
+.ultra-headline{ display:flex; align-items:baseline; gap:18px; }
+.pod5u{ font-family:var(--display); font-weight:900; font-size:96px; color:var(--orange); letter-spacing:-3px; }
+.ultra-meta{ font-weight:700; font-size:22px; color:var(--ink); line-height:1.2; }
+.ultra-meta b{ font-size:30px; }
+.ultra-list{ list-style:none; margin-top:24px; }
+.ultra-list li{ font-weight:700; font-size:30px; margin:12px 0; position:relative; padding-left:46px; }
+.ultra-list li::before{ content:"+"; position:absolute; left:0; color:var(--orange); font-family:var(--display); font-weight:900; }
+
+/* ===================== WHY US (comparison) ===================== */
+.cmp{ width:100%; border-collapse:separate; border-spacing:18px 0; margin-top:20px; flex:1; }
+.cmp th{ font-family:var(--display); font-weight:800; font-size:24px; color:var(--orange); padding:14px 0; vertical-align:bottom; text-transform:uppercase; }
+.cmp th small{ font-size:16px; font-weight:700; }
+.cmp th.feat-col{ width:60px; }
+.cmp td{ background:var(--card); text-align:center; font-size:46px; height:96px; }
+.cmp tbody tr td:first-child{ background:transparent; }
+.cmp tr:first-child td{ border-top-left-radius:0; }
+.cmp .rowlab{ text-align:right; font-family:var(--body); font-weight:700; font-size:24px; color:var(--orange); padding-right:18px; width:300px; }
+.cmp .yes{ color:#222; font-weight:800; }
+.cmp .no{ color:#222; font-weight:800; }
+/* highlight Pod 5 column */
+.cmp .us{ position:relative; }
+.cmp td.us{ box-shadow:inset 0 0 0 3px var(--orange); }
+.cmp tbody tr:first-child td.us{ border-radius:18px 18px 0 0; }
+.cmp tbody tr:last-child td.us{ border-radius:0 0 18px 18px; }
+/* rounded outer cells */
+.cmp tbody tr:first-child td:not(.rowlab){ border-top-left-radius:16px; border-top-right-radius:16px; }
+.cmp tbody tr:last-child td:not(.rowlab){ border-bottom-left-radius:16px; border-bottom-right-radius:16px; }
+
+/* ===================== CLOSE ===================== */
+.slide-close{ align-items:center; justify-content:center; }
+.close-title{ font-size:200px; position:absolute; top:60px; left:50%; transform:translateX(-50%); }
+.close-scene{ position:absolute; left:50%; top:58%; transform:translate(-50%,-50%); width:1120px; max-width:90%; }
+
+/* ===================== HUD ===================== */
+.counter{
+  position:absolute; bottom:18px; right:22px; z-index:20;
+  font-family:var(--display); font-weight:700; font-size:15px; color:#fff;
+  background:rgba(0,0,0,.45); padding:6px 12px; border-radius:20px; letter-spacing:1px;
+}
+.counter.hidden{ display:none; }
+.judge-tag{
+  position:absolute; bottom:18px; left:22px; z-index:20;
+  font-family:var(--display); font-weight:700; font-size:13px; color:#fff;
+  background:rgba(0,0,0,.4); padding:6px 12px; border-radius:20px; letter-spacing:1.5px;
+}
+.judge-tag:empty{ display:none; }
+/* always visible — presented via touch (AirPlay from iPhone), so no :hover */
+.nav-arrow{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:20;
+  width:62px; height:62px; border-radius:50%; border:none; cursor:pointer;
+  background:rgba(0,0,0,.32); color:#fff; font-size:38px; line-height:1;
+  display:flex; align-items:center; justify-content:center; opacity:.5; transition:opacity .2s;
+}
+.viewport:hover .nav-arrow{ opacity:.7; }
+.nav-arrow:hover,.nav-arrow:active{ opacity:1 !important; background:var(--orange); }
+.nav-prev{ left:16px; }
+.nav-next{ right:16px; }
+
+/* progress bar (top of stage) */
+.progress{ position:absolute; top:0; left:0; right:0; height:4px; background:rgba(0,0,0,.06); z-index:18; }
+.progress-bar{ height:100%; width:0; background:var(--orange); transition:width .45s ease; }
+
+/* ===================== JUDGE SUMMARY (final recap, check table) ===================== */
+.slide-summary{ justify-content:center; }
+.slide-summary .head{ font-size:60px; text-align:center; margin:0 0 2px; }
+.summary-sub{ text-align:center; color:var(--muted); font-weight:600; font-size:20px; margin-bottom:26px; }
+.sum-table{
+  width:100%; max-width:1240px; margin:0 auto; border-collapse:separate; border-spacing:12px; table-layout:fixed;
+}
+.sum-table th, .sum-table td{ padding:18px 8px; text-align:center; vertical-align:middle; border-radius:16px; }
+/* judge name column headers */
+.sum-table thead th{
+  background:var(--orange); color:#fff; font-family:var(--display); font-weight:900;
+  font-size:21px; letter-spacing:.4px; word-break:break-word; line-height:1.1;
+}
+/* left label column: problem + Pod 5 answer */
+.sum-table .sum-prob{ width:32%; text-align:left; background:transparent; padding-left:6px; }
+.sum-table thead th.sum-prob{ background:transparent; }
+.sum-table td.sum-prob b{ display:block; font-family:var(--display); font-weight:800; font-size:26px; color:var(--ink); }
+.sum-table td.sum-prob span{ display:block; font-weight:700; font-size:17px; color:var(--orange); margin-top:3px; }
+/* check cells */
+.sum-table td.sum-cell{ background:var(--card); }
+.sum-table td.sum-cell.has{ background:rgba(231,78,26,.12); box-shadow:inset 0 0 0 2px var(--orange); }
+.sum-table td.sum-cell.all{ font-weight:700; color:var(--orange); font-size:20px; }
+.sum-check{ color:var(--orange); font-size:34px; font-weight:900; line-height:1; }
+.sum-dash{ color:var(--muted); font-size:28px; font-weight:700; line-height:1; }
+
+/* ===================== ENTRANCE ANIMATIONS (subtle) ===================== */
+@keyframes rise{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes pop{ 0%{ opacity:0; transform:scale(.4); } 70%{ transform:scale(1.12); } 100%{ opacity:1; transform:scale(1); } }
+
+.slide [data-anim]{ opacity:0; }
+.slide.is-active [data-anim]{ animation:rise .5s cubic-bezier(.2,.8,.2,1) both; }
+.slide.is-active [data-anim]:nth-child(2){ animation-delay:.08s; }
+.slide.is-active [data-anim]:nth-child(3){ animation-delay:.16s; }
+.slide.is-active [data-anim]:nth-child(4){ animation-delay:.24s; }
+.feat-grid .feat:nth-child(2){ animation-delay:.1s; }
+.feat-grid .feat:nth-child(3){ animation-delay:.2s; }
+
+/* comparison check/X pop-in (driven by .pop class added on enter) */
+.cmp .yes,.cmp .no{ opacity:0; }
+.cmp.pop .yes,.cmp.pop .no{ animation:pop .42s cubic-bezier(.2,.8,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce){
+  .slide{ transition:none; }
+  .slide [data-anim],
+  .slide.is-active [data-anim],
+  .prob-card.selected .prob-assigned,
+  .cmp .yes,.cmp .no{ opacity:1 !important; animation:none !important; }
+  .bar{ transition:none; }
+  .progress-bar{ transition:none; }
+}
+
+</style>
 </head>
 <body>
 
@@ -31,7 +446,7 @@
       <button id="startBtn" class="start-btn">Start Presentation →</button>
 
       <p class="setup-hint">
-        Tap the on-screen <b>‹ ›</b> arrows to move · tap a judge to assign · <b>‹ Judges</b> on slide 1 returns here
+        Tap the on-screen <b>‹ ›</b> arrows to move · tap a judge to assign · tap <b>‹</b> on slide 1 to return here
       </p>
     </div>
   </div>
@@ -40,19 +455,9 @@
   <div id="viewport" class="viewport">
     <div id="stage" class="stage">
 
-      <!-- 1. TITLE -->
-      <section class="slide slide-title no-chrome" data-slide="title">
-        <div class="corner tl"><span class="fbla">2026 FBLA</span><br><span class="school">NORTHERN ACADEMY</span></div>
-        <div class="corner tr prepared">PREPARED BY:<br><b>YUVRAJ MUNDI</b><br><b>SOPHIA DALAVAI</b><br><b>KATIE HOANG</b></div>
-        <div class="title-wrap">
-          <h1 class="mega">POD 5</h1>
-          <div class="title-logo">
-            <span class="eight big">8</span>
-            <span class="wordmark big">EIGHT<br>SLEEP</span>
-          </div>
-        </div>
-        <img class="title-product" src="assets/title_product.png" alt="Pod 5 cover and hub" />
-        <button type="button" class="back-to-setup" id="backToSetup">‹ Judges &amp; Setup</button>
+      <!-- 1. TITLE (original slide) -->
+      <section class="slide slide-image no-chrome" data-slide="title">
+        <img class="slide-bg" src="orig_title.png" alt="POD 5 — Eight Sleep, 2026 FBLA Northern Academy" />
       </section>
 
       <!-- 2. PROBLEMS (interactive) -->
@@ -65,7 +470,7 @@
             <span class="prob-title">Can't Wake Up?</span>
             <span class="prob-assigned" data-assigned="wakeup"></span>
             <span class="prob-icon" aria-hidden="true">
-              <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="38" r="17"/><path d="M32 38V28M32 38l9 5"/><path d="M14 16l8-6M50 16l-8-6"/></g><text x="40" y="16" font-size="13" font-weight="800" fill="currentColor" stroke="none">z<tspan font-size="10">z</tspan></text></svg>
+              <img src="icon_wakeup.png" alt="" />
             </span>
             <span class="prob-judges" data-chips="wakeup"></span>
             <span class="prob-check">✓</span>
@@ -75,7 +480,7 @@
             <span class="prob-title">Different temperature preferences?</span>
             <span class="prob-assigned" data-assigned="temperature"></span>
             <span class="prob-icon" aria-hidden="true">
-              <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 46h48M12 46v-8h40v8M20 38v-6h24v6"/><circle cx="20" cy="14" r="5"/><path d="M20 5v3M20 20v3M11 14h3M26 14h3M14 8l2 2M26 8l-2 2"/><path d="M44 9v10M40 12l4-4 4 4M40 16l4 4 4-4"/></g></svg>
+              <img src="icon_temperature.png" alt="" />
             </span>
             <span class="prob-judges" data-chips="temperature"></span>
             <span class="prob-check">✓</span>
@@ -85,7 +490,7 @@
             <span class="prob-title">Wake up tired?</span>
             <span class="prob-assigned" data-assigned="energy"></span>
             <span class="prob-icon" aria-hidden="true">
-              <svg viewBox="0 0 64 64" width="74" height="74"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="13" r="5"/><path d="M34 20c-6 4-9 7-12 9M22 29l8 5 2 9M30 34l9-2M22 43l-5 9M32 43l3 9"/><rect x="40" y="10" width="14" height="8" rx="1.5"/><path d="M54 12v4"/><rect x="42" y="12" width="4" height="4" fill="currentColor" stroke="none"/></g></svg>
+              <img src="icon_energy.png" alt="" />
             </span>
             <span class="prob-judges" data-chips="energy"></span>
             <span class="prob-check">✓</span>
@@ -93,177 +498,591 @@
         </div>
       </section>
 
-      <!-- 3. SOLUTION: SMART WAKE-UP (wakeup) -->
-      <section class="slide slide-solution" data-slide="sol-wakeup" data-problem="wakeup">
+      <!-- 3. SOLUTION: SMART WAKE-UP (original slide + tailored badge) -->
+      <section class="slide slide-image no-chrome" data-slide="sol-wakeup" data-problem="wakeup">
+        <img class="slide-bg" src="orig_solwakeup.png" alt="Can't wake up — Smart Wake Up feature" />
         <div class="sol-badge" data-badge="wakeup"></div>
-        <div class="sol-left">
-          <h1 class="head"><span class="orange">CAN'T</span><br>WAKE UP?</h1>
-          <span class="pill">Smart Wake Up feature</span>
-          <ul class="sol-list">
-            <li>Gentle vibration in the bed</li>
-            <li>Gradual temperature change</li>
-          </ul>
-        </div>
-        <div class="sol-right wake-media">
-          <img class="media-bed" src="assets/couple_waking.jpg" alt="Couple waking up" />
-          <img class="media-phone" src="assets/phone_wakeup.png" alt="Smart wake-up screen showing 6:45 AM" />
-        </div>
       </section>
 
-      <!-- 4. SOLUTION: DUAL-ZONE (temperature) -->
-      <section class="slide slide-solution" data-slide="sol-temperature" data-problem="temperature">
+      <!-- 4. SOLUTION: DUAL-ZONE (original slide + tailored badge) -->
+      <section class="slide slide-image no-chrome" data-slide="sol-temperature" data-problem="temperature">
+        <img class="slide-bg" src="orig_soltemp.png" alt="Different temperature preferences — dual-zone control" />
         <div class="sol-badge" data-badge="temperature"></div>
-        <div class="sol-left temp-media">
-          <img class="temp-couple" src="assets/dualzone_couple.png" alt="Dual-zone temperatures 86 and 67" />
-          <img class="temp-tubes" src="assets/water_tubes.png" alt="Water-based system tubes" />
-          <img class="temp-mattress" src="assets/dualzone_mattress.jpg" alt="Dual-zone mattress hot and cold" />
-        </div>
-        <div class="sol-right end">
-          <h1 class="head right">DIFFERENT<br><span class="orange">TEMPERATURE</span><br><span class="orange">PREFERENCES?</span></h1>
-          <span class="pill">Dual-zone temperature control</span>
-          <ul class="sol-list right-list">
-            <li>Two independent zones</li>
-            <li>Precise water-based system</li>
-          </ul>
-        </div>
       </section>
 
-      <!-- 5. SOLUTION: AI TEMP (energy) -->
-      <section class="slide slide-solution" data-slide="sol-energy" data-problem="energy">
+      <!-- 5. SOLUTION: AI TEMP (original slide + tailored badge) -->
+      <section class="slide slide-image no-chrome" data-slide="sol-energy" data-problem="energy">
+        <img class="slide-bg" src="orig_solenergy.png" alt="Wake up tired — AI temperature adjustments" />
         <div class="sol-badge" data-badge="energy"></div>
-        <div class="sol-left">
-          <h1 class="head"><span class="orange">WAKE UP</span><br>TIRED?</h1>
-          <span class="pill">AI Temperature Adjustments</span>
-          <ul class="sol-list">
-            <li>Maximizes deep &amp; REM sleep</li>
-            <li>~10% more restorative sleep</li>
-          </ul>
-        </div>
-        <div class="sol-right chart-wrap">
-          <div class="chart-title">CHANGE IN RECOVERY SLEEP</div>
-          <div class="chart">
-            <div class="y-axis">
-              <span>60%</span><span>50%</span><span>40%</span><span>30%</span><span>20%</span><span>10%</span><span>0%</span>
-            </div>
-            <div class="bars">
-              <div class="bar-col"><div class="bar" data-h="41"><span class="bar-pct" data-v="41">0%</span></div><span class="bar-label">Without Pod5</span></div>
-              <div class="bar-col"><div class="bar" data-h="52"><span class="bar-pct" data-v="52">0%</span></div><span class="bar-label">With Pod5</span></div>
-            </div>
-          </div>
-        </div>
       </section>
 
-      <!-- 6. KEY FEATURES -->
-      <section class="slide slide-features" data-slide="features">
-        <h1 class="head center orange">KEY FEATURES</h1>
-        <div class="feat-grid">
-          <div class="feat" data-anim>
-            <span class="feat-icon">
-              <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 46V34a6 6 0 016-6h40a6 6 0 016 6v12M6 46h52M6 46v6M58 46v6"/><path d="M14 28v-6a4 4 0 014-4h10a3 3 0 013 3v7M33 28v-7a3 3 0 013-3h10a4 4 0 014 4v6"/></g></svg>
-            </span>
-            <span class="feat-label">DUAL ZONE TEMPERATURE CONTROL</span>
-          </div>
-          <div class="feat" data-anim>
-            <span class="feat-icon">
-              <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="22" width="32" height="24" rx="6"/><path d="M32 14v8M32 14a3 3 0 100-6 3 3 0 000 6z"/><circle cx="25" cy="33" r="2.4" fill="currentColor"/><circle cx="39" cy="33" r="2.4" fill="currentColor"/><path d="M25 40h14"/><path d="M16 30l-4 3v6l4 3M48 30l4 3v6l-4 3"/></g></svg>
-            </span>
-            <span class="feat-label">AI TEMPERATURE ADJUSTMENTS</span>
-          </div>
-          <div class="feat" data-anim>
-            <span class="feat-icon">
-              <svg viewBox="0 0 64 64" width="58" height="58"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 44c0-12 4-22 12-22s12 10 12 22zM16 46h32M28 50a4 4 0 008 0"/><path d="M50 22c3 3 4 7 4 11M14 22c-3 3-4 7-4 11"/></g></svg>
-            </span>
-            <span class="feat-label">SMART WAKE UP WITH TEMPERATURE &amp; VIBRATIONS</span>
-          </div>
-        </div>
+      <!-- 6. KEY FEATURES (original slide) -->
+      <section class="slide slide-image no-chrome" data-slide="features">
+        <img class="slide-bg" src="orig_features.png" alt="Key features — dual zone, AI temperature, smart wake up" />
       </section>
 
-      <!-- 7. PRICING -->
-      <section class="slide slide-pricing" data-slide="pricing">
-        <h1 class="head center orange">PRICING</h1>
-        <div class="price-hero">
-          <img class="price-img" src="assets/pod5_mattress.png" alt="Pod 5 mattress" data-anim />
-          <div class="price-tag" data-anim>
-            <span class="price-name">POD 5</span>
-            <span class="price-amt" data-v="2999">$0</span>
-            <span class="price-note">From ~$2/night over 5 years · $81/mo financing</span>
-          </div>
-        </div>
+      <!-- 7. PRICING (original slide) -->
+      <section class="slide slide-image no-chrome" data-slide="pricing">
+        <img class="slide-bg" src="orig_pricing.png" alt="Pricing — Pod 5 $2,999" />
       </section>
 
-      <!-- 8. PRICING + OTHER OPTIONS (Ultra) -->
-      <section class="slide slide-ultra" data-slide="ultra">
-        <h1 class="head center orange">PRICING + OTHER OPTIONS</h1>
-        <div class="ultra-grid">
-          <div class="ultra-base" data-anim>
-            <img src="assets/pricing_pod5.png" alt="Pod 5" />
-            <div class="ultra-base-tag"><b>POD 5</b><span>$2,999</span></div>
-          </div>
-          <div class="ultra-card" data-anim>
-            <img class="ultra-img" src="assets/ultra_base.png" alt="Pod 5 Ultra adjustable base" />
-            <div class="ultra-headline">
-              <span class="pod5u">POD 5U</span>
-              <span class="ultra-meta">POD 5 ULTRA<br><b>$4,999</b></span>
-            </div>
-            <ul class="ultra-list">
-              <li>Snoring detection &amp; mitigation</li>
-              <li>Custom elevation for sleeping</li>
-              <li>Custom elevation for reading</li>
-              <li>Custom elevation for relaxing</li>
-            </ul>
-          </div>
-        </div>
+      <!-- 8. PRICING + OTHER OPTIONS (original slide) -->
+      <section class="slide slide-image no-chrome" data-slide="ultra">
+        <img class="slide-bg" src="orig_ultra.png" alt="Pricing + other options — Pod 5 and Pod 5 Ultra" />
       </section>
 
-      <!-- 9. WHY US -->
-      <section class="slide slide-whyus" data-slide="whyus">
-        <h1 class="head center orange">WHY US</h1>
-        <table class="cmp">
-          <thead>
-            <tr>
-              <th class="feat-col"></th>
-              <th class="us">POD 5<br><small>EIGHT SLEEP</small></th>
-              <th>CHILISLEEP<br><small>CUBE</small></th>
-              <th>CHILIPAD<br><small>DOCK PRO</small></th>
-              <th>BEDJET 3</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td class="rowlab">Dual Zone Temperature</td><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td></tr>
-            <tr><td class="rowlab">Sleep Tracking</td><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
-            <tr><td class="rowlab">AI Temp Changes</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
-            <tr><td class="rowlab">Low Maintenance</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="yes">✓</span></td></tr>
-          </tbody>
-        </table>
+      <!-- 9. WHY US (original slide) -->
+      <section class="slide slide-image no-chrome" data-slide="whyus">
+        <img class="slide-bg" src="orig_whyus.png" alt="Why us — Pod 5 vs ChiliSleep, Chilipad, BedJet" />
       </section>
 
-      <!-- 11. CLOSE -->
-      <section class="slide slide-close" data-slide="close">
-        <h1 class="mega center close-title">POD 5</h1>
-        <img class="close-coffee" src="assets/coffee.png" alt="Cup of coffee" />
-        <img class="close-bed" src="assets/close_bed.png" alt="Pod 5 bed" />
-        <span class="ribbon ribbon-1">$81/Month Installment</span>
-        <span class="ribbon ribbon-2">30-Day Free Trial &amp; Return</span>
+      <!-- 11. CLOSE (original slide) -->
+      <section class="slide slide-image no-chrome" data-slide="close">
+        <img class="slide-bg" src="orig_close.png" alt="Pod 5 — $81/month installment, 30-day free trial and return" />
       </section>
 
-      <!-- 12. JUDGE SUMMARY — per-judge tailored recap -->
+      <!-- 12. JUDGE SUMMARY — per-judge tailored recap (table) -->
       <section class="slide slide-summary" data-slide="summary">
         <h1 class="head center orange">YOUR PANEL, SOLVED</h1>
         <p class="summary-sub">What each judge raised — and the Pod 5 answer</p>
-        <ul class="summary-list" id="summaryList"><!-- filled by JS --></ul>
+        <table class="sum-table" id="summaryTable"><!-- built by JS --></table>
       </section>
 
     </div><!-- /stage -->
 
     <!-- HUD -->
     <div id="progress" class="progress"><div id="progressBar" class="progress-bar"></div></div>
-    <div id="counter" class="counter"></div>
-    <div id="judgeTag" class="judge-tag"></div>
-    <button id="navPrev" class="nav-arrow nav-prev" aria-label="Previous">‹</button>
-    <button id="navNext" class="nav-arrow nav-next" aria-label="Next">›</button>
   </div>
 
-  <script src="js/slides.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+/* Slide order + problem→solution mapping.
+   Canonical order of every slide in the deck. Solution slides carry a
+   `problem` key and are only included when that problem is assigned to at
+   least one judge on the Problems slide. Everything else is always shown. */
+window.DECK = {
+  // canonical order by data-slide id
+  order: [
+    'title',
+    'problems',
+    'sol-wakeup',      // shown only if problem "wakeup" assigned to a judge
+    'sol-temperature', // shown only if problem "temperature" assigned
+    'sol-energy',      // shown only if problem "energy" assigned
+    'features',
+    'pricing',
+    'ultra',
+    'whyus',
+    'close',
+    'summary'          // always shown: per-judge tailored recap
+  ],
+  // conditional solution slides → the problem that activates them
+  conditional: {
+    'sol-wakeup': 'wakeup',
+    'sol-temperature': 'temperature',
+    'sol-energy': 'energy'
+  },
+  // labels used for the live "needs" summary on the Problems slide
+  problemLabels: {
+    wakeup: 'Waking up',
+    temperature: 'Temperature',
+    energy: 'Energy / tiredness'
+  },
+  // problem → the Pod 5 feature that solves it (agenda + recap)
+  featureFor: {
+    wakeup: 'Smart Wake-Up (vibration + gradual temperature)',
+    temperature: 'Dual-Zone Temperature Control',
+    energy: 'AI Temperature Adjustments (deep & REM sleep)'
+  },
+  // product options for the recap / close-the-sale slide
+  products: {
+    pod5: {
+      name: 'POD 5',
+      price: 2999,
+      priceLabel: '$2,999',
+      perNight: '~$2 / night over 5 years',
+      monthly: '$81 / mo financing'
+    },
+    ultra: {
+      name: 'POD 5 ULTRA',
+      price: 4999,
+      priceLabel: '$4,999',
+      perNight: 'adjustable base + snoring mitigation',
+      monthly: '$135 / mo financing'
+    }
+  }
+};
+
+/* ===================================================================
+   Pod 5 Interactive Sales Presentation — controller
+   Fully offline. No external requests.
+   =================================================================== */
+(function () {
+  'use strict';
+
+  var DECK = window.DECK;
+  var COND = DECK.conditional;
+
+  var stage = document.getElementById('stage');
+  var setupEl = document.getElementById('setup');
+  var needsSummary = document.getElementById('needsSummary');
+  var progressBar = document.getElementById('progressBar');
+
+  var slideEls = {};   // id -> element
+  DECK.order.forEach(function (id) {
+    slideEls[id] = stage.querySelector('[data-slide="' + id + '"]');
+  });
+
+  // problem keys (wakeup / temperature / energy)
+  var PROBLEMS = Object.keys(COND).map(function (id) { return COND[id]; });
+  // canonical problem order (matches DECK.order solution slides)
+  var PROBLEM_ORDER = ['wakeup', 'temperature', 'energy'];
+
+  // short phrases for badges / recap
+  var SAID = {
+    wakeup: 'trouble waking up',
+    temperature: 'different temperature preferences',
+    energy: 'waking up tired'
+  };
+
+  // assignments: problem key -> Set of judge numbers
+  var assignments = {};
+  PROBLEMS.forEach(function (p) { assignments[p] = new Set(); });
+
+  var currentId = 'title';
+  var focusedProblem = 'wakeup';   // which problem card the number keys act on
+  var judgeCount = 2;
+  var started = false;
+  // judge number -> entered last name (used everywhere instead of "Judge 1")
+  var judgeNames = {};
+
+  function judgesFor(problem) {
+    return Array.from(assignments[problem]).sort(function (a, b) { return a - b; });
+  }
+  function isAssigned(problem) { return assignments[problem].size > 0; }
+
+  /* -------- judge name helpers -------- */
+  function judgeName(n) { return (judgeNames[n] || '').trim(); }
+  // short token for a judge: their last name (uppercased) or "J3" fallback
+  function judgeToken(n) { var nm = judgeName(n); return nm ? nm.toUpperCase() : ('J' + n); }
+  // full label for a judge: "JUDGE SMITH" or "JUDGE 3" fallback
+  function judgeLabel(n) { var nm = judgeName(n); return 'JUDGE ' + (nm ? nm.toUpperCase() : n); }
+  function problemsForJudge(n) {
+    return PROBLEM_ORDER.filter(function (p) { return assignments[p].has(n); });
+  }
+
+  /* -------- inject shared chrome (FBLA tag + logo) on non-title slides -------- */
+  function injectChrome() {
+    DECK.order.forEach(function (id) {
+      var el = slideEls[id];
+      if (!el || el.classList.contains('no-chrome')) return;
+      var tl = document.createElement('div');
+      tl.className = 'chrome-tl';
+      tl.innerHTML = '<span class="fbla">2026 FBLA</span><br><span class="school">NORTHERN ACADEMY</span>';
+      var tr = document.createElement('div');
+      tr.className = 'chrome-tr';
+      tr.innerHTML = '<span class="eight">8</span><span class="wordmark">EIGHT<br>SLEEP</span>';
+      el.appendChild(tl);
+      el.appendChild(tr);
+    });
+  }
+
+  /* -------- stage scaling: fit 1440x810 into the viewport -------- */
+  function fitStage() {
+    var s = Math.min(window.innerWidth / 1440, window.innerHeight / 810);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fitStage);
+
+  /* -------- active (filtered + ordered) slide list -------- */
+  function activeList() {
+    return DECK.order.filter(function (id) {
+      var prob = COND[id];
+      return !prob || isAssigned(prob);
+    });
+  }
+
+  /* -------- count-up animation -------- */
+  function fmtVal(v, opts) {
+    if (opts.money) return '$' + v.toLocaleString('en-US');
+    if (opts.pct) return v + '%';
+    return '' + v;
+  }
+  function countUp(el, to, opts) {
+    opts = opts || {};
+    var dur = opts.dur || 850, start = null;
+    function frame(t) {
+      if (start === null) start = t;
+      var p = Math.min((t - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmtVal(Math.round(to * eased), opts);
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* -------- judge label helpers -------- */
+  function judgeListLabel(arr) {
+    return arr.map(function (n) { return judgeName(n) ? judgeName(n).toUpperCase() : n; }).join(' · ');
+  }
+  function forJudgesLabel(arr) {
+    return (arr.length === 1 ? 'FOR JUDGE ' : 'FOR JUDGES ') + judgeListLabel(arr);
+  }
+
+  /* -------- build per-card judge chips for the current judgeCount -------- */
+  function buildChips() {
+    stage.querySelectorAll('.prob-judges').forEach(function (box) {
+      var problem = box.dataset.chips;
+      box.innerHTML = '';
+      for (var n = 1; n <= judgeCount; n++) {
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'judge-chip';
+        chip.textContent = judgeToken(n);
+        chip.dataset.judge = n;
+        chip.dataset.problem = problem;
+        box.appendChild(chip);
+      }
+    });
+  }
+
+  /* -------- render the current slide -------- */
+  function render() {
+    var list = activeList();
+    if (list.indexOf(currentId) === -1) currentId = 'problems'; // safety
+
+    DECK.order.forEach(function (id) {
+      var el = slideEls[id];
+      if (!el) return;
+      el.classList.toggle('active', id === currentId);
+      if (id !== currentId) el.classList.remove('is-active');
+    });
+
+    // progress bar
+    var pos = list.indexOf(currentId) + 1;
+    if (progressBar) progressBar.style.width = (pos / list.length * 100) + '%';
+
+    // per-slide content + entry hooks
+    if (currentId === 'summary') renderSummary();
+    if (COND[currentId]) renderBadge(currentId);
+    updateProblemUI();
+
+    // re-trigger entrance animations on the active slide
+    var cur = slideEls[currentId];
+    if (cur) {
+      void cur.offsetWidth; // reflow so the animation restarts
+      requestAnimationFrame(function () {
+        cur.classList.add('is-active');
+        if (currentId === 'sol-energy') animateBars();
+        if (currentId === 'whyus') animateCompare();
+        if (currentId === 'pricing') {
+          var pa = cur.querySelector('.price-amt');
+          if (pa) countUp(pa, parseInt(pa.dataset.v, 10), { money: true });
+        }
+      });
+    }
+  }
+
+  function go(id) {
+    if (!id) return;
+    currentId = id;
+    render();
+  }
+  function next() {
+    var list = activeList();
+    var i = list.indexOf(currentId);
+    if (i < list.length - 1) go(list[i + 1]);
+  }
+  function prev() {
+    var list = activeList();
+    var i = list.indexOf(currentId);
+    if (i > 0) go(list[i - 1]);
+    else backToSetup();   // already on slide 1 → back to the setup overlay
+  }
+
+  /* -------- solution-slide badge -------- */
+  function renderBadge(slideId) {
+    var problem = COND[slideId];
+    var badge = slideEls[slideId].querySelector('.sol-badge');
+    if (!badge) return;
+    var arr = judgesFor(problem);
+    if (arr.length === 0) { badge.innerHTML = ''; return; }
+    var who = arr.length === 1
+      ? judgeLabel(arr[0])
+      : 'JUDGES ' + judgeListLabel(arr);
+    badge.innerHTML =
+      '<span class="sb-for">✦ PERSONALIZED FOR</span>' +
+      '<span class="sb-judges">' + who + '</span>' +
+      '<span class="sb-mention">you told us about <b>' + SAID[problem] + '</b></span>';
+  }
+
+  /* -------- per-judge summary (final slide, as a check table) -------- */
+  function renderSummary() {
+    var table = document.getElementById('summaryTable');
+    if (!table) return;
+    var assigned = PROBLEM_ORDER.filter(isAssigned);
+
+    // header: blank corner + one column per judge
+    var head = '<thead><tr><th class="sum-prob"></th>';
+    for (var n = 1; n <= judgeCount; n++) head += '<th>' + judgeToken(n) + '</th>';
+    head += '</tr></thead>';
+
+    var rows = '';
+    if (assigned.length === 0) {
+      rows = '<tr><td class="sum-prob"><b>The complete Pod 5 system</b>' +
+        '<span>A full walkthrough for everyone</span></td>' +
+        '<td class="sum-cell all" colspan="' + judgeCount + '">For all judges</td></tr>';
+    } else {
+      assigned.forEach(function (p) {
+        var cells = '<td class="sum-prob"><b>' + DECK.problemLabels[p] + '</b>' +
+          '<span>' + DECK.featureFor[p].split(' (')[0] + '</span></td>';
+        for (var n = 1; n <= judgeCount; n++) {
+          var has = assignments[p].has(n);
+          cells += '<td class="sum-cell' + (has ? ' has' : '') + '">' +
+            (has ? '<span class="sum-check">✓</span>' : '<span class="sum-dash">–</span>') + '</td>';
+        }
+        rows += '<tr>' + cells + '</tr>';
+      });
+    }
+    table.innerHTML = head + '<tbody>' + rows + '</tbody>';
+  }
+
+  /* -------- Problems slide interactivity -------- */
+  function updateProblemUI() {
+    stage.querySelectorAll('.prob-card').forEach(function (c) {
+      c.classList.toggle('selected', isAssigned(c.dataset.problem));
+      c.classList.toggle('focused', c.dataset.problem === focusedProblem);
+    });
+    stage.querySelectorAll('.judge-chip').forEach(function (chip) {
+      var on = assignments[chip.dataset.problem].has(parseInt(chip.dataset.judge, 10));
+      chip.classList.toggle('on', on);
+    });
+    // prominent per-card banner showing which judge(s) this problem belongs to
+    stage.querySelectorAll('.prob-assigned').forEach(function (el) {
+      var arr = judgesFor(el.dataset.assigned);
+      el.textContent = arr.length
+        ? (arr.length === 1 ? 'JUDGE ' + judgeToken(arr[0]) : 'JUDGES ' + judgeListLabel(arr))
+        : '';
+    });
+    if (!needsSummary) return;
+    var assigned = PROBLEM_ORDER.filter(isAssigned);
+    if (assigned.length === 0) {
+      needsSummary.innerHTML = 'Tap the judge(s) below who mention each problem';
+    } else {
+      var parts = assigned.map(function (p) {
+        return DECK.problemLabels[p] + ' (' + judgeListLabel(judgesFor(p)) + ')';
+      });
+      needsSummary.innerHTML = 'Focusing on: <b>' + parts.join(' · ') + '</b>';
+    }
+  }
+
+  // toggle a judge on a problem (shared by chip clicks and number keys)
+  function toggleJudge(p, n) {
+    if (!assignments[p] || n < 1 || n > judgeCount) return;
+    if (assignments[p].has(n)) assignments[p].delete(n); else assignments[p].add(n);
+    updateProblemUI();
+    // total slide count may change → refresh the progress bar
+    var list = activeList();
+    if (progressBar) progressBar.style.width = ((list.indexOf(currentId) + 1) / list.length * 100) + '%';
+  }
+
+  // move the keyboard focus between problem cards
+  function moveProblemFocus(delta) {
+    var i = PROBLEM_ORDER.indexOf(focusedProblem);
+    if (i < 0) i = 0;
+    focusedProblem = PROBLEM_ORDER[(i + delta + PROBLEM_ORDER.length) % PROBLEM_ORDER.length];
+    updateProblemUI();
+  }
+
+  function bindProblemChips() {
+    // delegated: chips are rebuilt whenever judgeCount changes
+    stage.querySelectorAll('.prob-grid').forEach(function (grid) {
+      grid.addEventListener('click', function (e) {
+        var card = e.target.closest('.prob-card');
+        if (!card) return;
+        focusedProblem = card.dataset.problem;   // clicking a card focuses it
+        var chip = e.target.closest('.judge-chip');
+        if (chip) toggleJudge(chip.dataset.problem, parseInt(chip.dataset.judge, 10));
+        else updateProblemUI();
+      });
+    });
+  }
+
+  /* -------- bar chart animation (slide sol-energy) -------- */
+  function animateBars() {
+    var slide = slideEls['sol-energy'];
+    var bars = slide.querySelectorAll('.bar');
+    bars.forEach(function (b) {
+      b.style.height = '0';
+      var pct = b.querySelector('.bar-pct');
+      if (pct) pct.textContent = '0%';
+    });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        bars.forEach(function (b) {
+          var pct = parseFloat(b.dataset.h);   // value out of 60 (axis max)
+          b.style.height = (pct / 60 * 100) + '%';
+          var lbl = b.querySelector('.bar-pct');
+          if (lbl) countUp(lbl, parseInt(lbl.dataset.v, 10), { pct: true, dur: 1100 });
+        });
+      });
+    });
+  }
+
+  /* -------- comparison check/X pop-in (slide whyus) -------- */
+  function animateCompare() {
+    var cmp = slideEls['whyus'].querySelector('.cmp');
+    if (!cmp) return;
+    cmp.classList.remove('pop');
+    void cmp.offsetWidth;
+    var marks = cmp.querySelectorAll('.yes,.no');
+    marks.forEach(function (m, i) { m.style.animationDelay = (i * 0.05) + 's'; });
+    cmp.classList.add('pop');
+  }
+
+  /* -------- fullscreen -------- */
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      (document.documentElement.requestFullscreen || function () {}).call(document.documentElement);
+    } else {
+      (document.exitFullscreen || function () {}).call(document);
+    }
+  }
+
+  /* -------- start / restart -------- */
+  function startPresentation() {
+    judgeCount = clampJudges(parseInt(document.getElementById('judgeCount').value, 10));
+    buildChips();
+    setupEl.classList.add('hidden');
+    started = true;
+    currentId = 'title';
+    fitStage();
+    render();
+  }
+  function restart() {
+    PROBLEMS.forEach(function (p) { assignments[p].clear(); });
+    focusedProblem = 'wakeup';
+    started = false;
+    currentId = 'title';
+    setupEl.classList.remove('hidden');
+    updateProblemUI();
+  }
+
+  // return to the setup overlay from slide 1 WITHOUT wiping assignments/names
+  function backToSetup() {
+    started = false;
+    currentId = 'title';
+    buildNameInputs();
+    setupEl.classList.remove('hidden');
+  }
+
+  function clampJudges(n) {
+    if (isNaN(n) || n < 1) return 1;
+    if (n > 8) return 8;
+    return n;
+  }
+
+  /* -------- judge-name inputs on the setup overlay -------- */
+  function buildNameInputs() {
+    var box = document.getElementById('judgeNames');
+    if (!box) return;
+    var count = clampJudges(parseInt(document.getElementById('judgeCount').value, 10));
+    box.innerHTML = '';
+    for (var n = 1; n <= count; n++) {
+      var row = document.createElement('div');
+      row.className = 'judge-name-row';
+      var pre = document.createElement('span');
+      pre.className = 'jn-prefix';
+      pre.textContent = 'Judge';
+      var inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'text-input jn-input';
+      inp.dataset.judge = n;
+      inp.placeholder = 'last name';
+      inp.autocomplete = 'off';
+      inp.value = judgeNames[n] || '';
+      row.appendChild(pre);
+      row.appendChild(inp);
+      box.appendChild(row);
+    }
+  }
+
+  /* -------- setup screen wiring -------- */
+  function bindSetup() {
+    var numEl = document.getElementById('judgeCount');
+    document.getElementById('judgePick').addEventListener('click', function (e) {
+      var btn = e.target.closest('.step-btn');
+      if (!btn) return;
+      numEl.value = clampJudges(parseInt(numEl.value, 10) + parseInt(btn.dataset.step, 10));
+      buildNameInputs();
+    });
+    numEl.addEventListener('change', function () {
+      numEl.value = clampJudges(parseInt(numEl.value, 10));
+      buildNameInputs();
+    });
+    document.getElementById('judgeNames').addEventListener('input', function (e) {
+      var inp = e.target.closest('.jn-input');
+      if (!inp) return;
+      judgeNames[parseInt(inp.dataset.judge, 10)] = inp.value;
+    });
+    document.getElementById('startBtn').addEventListener('click', function () {
+      startPresentation();
+    });
+  }
+
+  /* -------- keyboard / clicker -------- */
+  function bindKeys() {
+    document.addEventListener('keydown', function (e) {
+      // allow typing in the setup fields
+      if (e.target && e.target.tagName === 'INPUT') {
+        if (e.key === 'Enter') document.getElementById('startBtn').click();
+        return;
+      }
+      // Problems slide: arrows pick a problem, number keys assign judges to it
+      if (started && currentId === 'problems') {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          moveProblemFocus(e.key === 'ArrowUp' ? -1 : 1);
+          return;
+        }
+        if (/^[1-8]$/.test(e.key)) {
+          e.preventDefault();
+          toggleJudge(focusedProblem, parseInt(e.key, 10));
+          return;
+        }
+      }
+      switch (e.key) {
+        case 'ArrowRight': case ' ': case 'PageDown': case 'Enter':
+          if (started) { e.preventDefault(); next(); } break;
+        case 'ArrowLeft': case 'PageUp':
+          if (started) { e.preventDefault(); prev(); } break;
+        case 'f': case 'F': toggleFullscreen(); break;
+        case 'r': case 'R': restart(); break;
+      }
+    });
+  }
+
+  /* -------- tap to navigate (phone-friendly: no arrows) -------- */
+  function bindTap() {
+    document.getElementById('viewport').addEventListener('click', function (e) {
+      if (!started) return;
+      // let interactive controls handle their own taps
+      if (e.target.closest('button, input, textarea, select, a, .judge-chip')) return;
+      // left third = back, rest = forward
+      if (e.clientX < window.innerWidth * 0.32) prev(); else next();
+    });
+  }
+
+  /* -------- init -------- */
+  injectChrome();
+  buildChips();
+  buildNameInputs();
+  bindProblemChips();
+  bindSetup();
+  bindKeys();
+  bindTap();
+  fitStage();
+  updateProblemUI();
+})();
+
+  </script>
 </body>
 </html>
