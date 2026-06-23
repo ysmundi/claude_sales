@@ -383,6 +383,12 @@ body{
   background:var(--orange); color:#fff; font-family:var(--display); font-weight:900;
   font-size:21px; letter-spacing:.4px; word-break:break-word; line-height:1.1;
 }
+.sum-table thead th .sum-jlabel{ font-weight:700; font-size:14px; letter-spacing:.4px; opacity:.85; }
+/* backup-close cell (judge raised none of the problems) */
+.sum-table td.sum-cell.gift{
+  font-family:var(--display); font-weight:800; font-size:16px; color:var(--orange);
+  line-height:1.25; letter-spacing:.2px; padding-left:10px; padding-right:10px;
+}
 /* left label column: problem + Pod 5 answer */
 .sum-table .sum-prob{ width:32%; text-align:left; background:transparent; padding-left:6px; }
 .sum-table thead th.sum-prob{ background:transparent; }
@@ -824,9 +830,12 @@ window.DECK = {
     if (!table) return;
     var assigned = PROBLEM_ORDER.filter(isAssigned);
 
-    // header: blank corner + one column per judge
+    // header: blank corner + one column per judge ("Judge: NAME" reads more respectfully)
     var head = '<thead><tr><th class="sum-prob"></th>';
-    for (var n = 1; n <= judgeCount; n++) head += '<th>' + judgeToken(n) + '</th>';
+    for (var n = 1; n <= judgeCount; n++) {
+      var hnm = judgeName(n);
+      head += '<th><span class="sum-jlabel">Judge:</span> ' + (hnm ? hnm.toUpperCase() : n) + '</th>';
+    }
     head += '</tr></thead>';
 
     var rows = '';
@@ -845,6 +854,23 @@ window.DECK = {
         }
         rows += '<tr>' + cells + '</tr>';
       });
+
+      // backup close: any judge who raised none of the problems still gets a path.
+      // This row only appears when such a judge exists.
+      var noNeed = [];
+      for (var m = 1; m <= judgeCount; m++) {
+        if (problemsForJudge(m).length === 0) noNeed.push(m);
+      }
+      if (noNeed.length) {
+        var gcells = '<td class="sum-prob"><b>No needs raised?</b>' +
+          '<span>The Pod 5 still makes a perfect gift</span></td>';
+        for (var k = 1; k <= judgeCount; k++) {
+          gcells += (noNeed.indexOf(k) !== -1)
+            ? '<td class="sum-cell gift has">Gift the Pod 5 to a friend</td>'
+            : '<td class="sum-cell"><span class="sum-dash">–</span></td>';
+        }
+        rows += '<tr>' + gcells + '</tr>';
+      }
     }
     table.innerHTML = head + '<tbody>' + rows + '</tbody>';
   }
