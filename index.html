@@ -199,6 +199,7 @@ body{
   display:none; margin-top:12px; font-family:var(--display); font-weight:800;
   font-size:18px; letter-spacing:.6px; color:#fff; background:var(--orange);
   padding:8px 18px; border-radius:22px; box-shadow:0 6px 16px rgba(231,78,26,.3);
+  text-align:center; line-height:1.25;
 }
 .prob-card.selected .prob-assigned{ display:inline-block; animation:pop .35s cubic-bezier(.2,.8,.2,1) both; }
 /* keyboard focus ring — which problem the number keys act on */
@@ -254,13 +255,14 @@ body{
 
 /* solution-slide "why this slide is here" badge */
 .sol-badge{
-  position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:6;
-  display:flex; align-items:center; gap:14px; max-width:90%;
-  background:#fff; color:var(--ink); padding:12px 16px 12px 22px; border-radius:40px;
-  border:3px solid var(--orange); font-weight:600; font-size:19px; letter-spacing:.2px;
+  position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:6;
+  display:flex; flex-direction:column; align-items:center; gap:7px; max-width:86%;
+  background:#fff; color:var(--ink); padding:11px 26px; border-radius:22px;
+  border:3px solid var(--orange); font-weight:600; font-size:17px; letter-spacing:.2px;
   text-align:center; box-shadow:0 10px 30px rgba(231,78,26,.22);
 }
 .sol-badge:empty{ display:none; }
+.sol-badge .sb-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center; }
 .sol-badge .sb-for{
   font-family:var(--display); font-weight:800; font-size:15px; letter-spacing:1px;
   color:var(--orange); white-space:nowrap;
@@ -269,7 +271,7 @@ body{
 .sol-badge .sb-mention b{ color:var(--ink); font-weight:800; }
 .sol-badge .sb-judges{
   background:var(--orange); color:#fff; font-family:var(--display); font-weight:900;
-  font-size:20px; letter-spacing:.6px; padding:8px 18px; border-radius:24px; white-space:nowrap;
+  font-size:19px; letter-spacing:.6px; padding:7px 16px; border-radius:24px; white-space:nowrap;
 }
 
 /* ===================== KEY FEATURES ===================== */
@@ -809,8 +811,10 @@ window.DECK = {
       ? judgeLabel(arr[0])
       : 'JUDGES ' + judgeListLabel(arr);
     badge.innerHTML =
-      '<span class="sb-for">✦ PERSONALIZED FOR</span>' +
-      '<span class="sb-judges">' + who + '</span>' +
+      '<span class="sb-row">' +
+        '<span class="sb-for">✦ PERSONALIZED FOR</span>' +
+        '<span class="sb-judges">' + who + '</span>' +
+      '</span>' +
       '<span class="sb-mention">you told us about <b>' + SAID[problem] + '</b></span>';
   }
 
@@ -867,10 +871,9 @@ window.DECK = {
     if (assigned.length === 0) {
       needsSummary.innerHTML = 'Tap the judge(s) below who mention each problem';
     } else {
-      var parts = assigned.map(function (p) {
-        return DECK.problemLabels[p] + ' (' + judgeListLabel(judgesFor(p)) + ')';
-      });
-      needsSummary.innerHTML = 'Focusing on: <b>' + parts.join(' · ') + '</b>';
+      // summary line intentionally cleared once assignments begin — the per-card
+      // judge banners carry the info and a long summary here overlapped the cards
+      needsSummary.innerHTML = '';
     }
   }
 
