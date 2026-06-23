@@ -383,7 +383,7 @@ body{
   background:var(--orange); color:#fff; font-family:var(--display); font-weight:900;
   font-size:21px; letter-spacing:.4px; word-break:break-word; line-height:1.1;
 }
-.sum-table thead th .sum-jlabel{ font-weight:700; font-size:14px; letter-spacing:.4px; opacity:.85; }
+.sum-table thead th.sum-axis{ text-align:left; color:var(--orange); font-family:var(--display); font-weight:800; font-size:18px; letter-spacing:1px; opacity:.85; vertical-align:middle; }
 /* backup-close cell (judge raised none of the problems) */
 .sum-table td.sum-cell.gift{
   font-family:var(--display); font-weight:800; font-size:16px; color:var(--orange);
@@ -830,11 +830,11 @@ window.DECK = {
     if (!table) return;
     var assigned = PROBLEM_ORDER.filter(isAssigned);
 
-    // header: blank corner + one column per judge ("Judge: NAME" reads more respectfully)
-    var head = '<thead><tr><th class="sum-prob"></th>';
+    // header: a single "Judge" axis label in the corner + one column per judge name
+    var head = '<thead><tr><th class="sum-prob sum-axis">Judge</th>';
     for (var n = 1; n <= judgeCount; n++) {
       var hnm = judgeName(n);
-      head += '<th><span class="sum-jlabel">Judge:</span> ' + (hnm ? hnm.toUpperCase() : n) + '</th>';
+      head += '<th>' + (hnm ? hnm.toUpperCase() : n) + '</th>';
     }
     head += '</tr></thead>';
 
