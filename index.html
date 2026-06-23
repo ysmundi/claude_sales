@@ -8,7 +8,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Pod 5" />
-  <meta name="theme-color" content="#0c0c0c" />
+  <meta name="theme-color" content="#FAFAFA" />
   <title>Pod 5 — Eight Sleep | FBLA Sales Presentation</title>
   <style>
 /* ===================== FONTS (bundled, offline) ===================== */
@@ -39,14 +39,14 @@
 html,body{ height:100%; }
 body{
   font-family:var(--body);
-  background:#0c0c0c;
+  background:var(--bg);
   color:var(--ink);
   overflow:hidden;
   -webkit-font-smoothing:antialiased;
 }
 
 /* ===================== STAGE / SCALING ===================== */
-.viewport{ position:fixed; inset:0; background:#0c0c0c; }
+.viewport{ position:fixed; inset:0; background:var(--bg); overflow:hidden; }
 .stage{
   position:absolute; top:50%; left:50%;
   width:1440px; height:810px;
@@ -718,6 +718,8 @@ window.DECK = {
     var vp = window.visualViewport;
     var vw = (vp && vp.width) || window.innerWidth;
     var vh = (vp && vp.height) || window.innerHeight;
+    // FIT the whole slide (nothing cropped); blank area is white so it reads as
+    // seamless full-screen on the white slides rather than black letterbox bars.
     var s = Math.min(vw / 1440, vh / 810);
     stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
   }
