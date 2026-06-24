@@ -248,10 +248,12 @@ body{
 .sol-right.end{ align-items:flex-end; text-align:right; }
 .sol-right.end .pill{ align-self:flex-end; }
 
-/* wake-up media */
-.wake-media{ position:relative; height:100%; }
-.media-bed{ position:absolute; right:0; top:90px; width:560px; border-radius:18px; box-shadow:0 14px 40px rgba(0,0,0,.18); }
-.media-phone{ position:absolute; left:0; bottom:80px; width:300px; border-radius:22px; box-shadow:0 14px 40px rgba(0,0,0,.25); }
+/* solution slides: more air between the headline and the feature pill */
+.sol-left .pill{ margin-top:44px; }
+
+/* wake-up: single expanded phone mockup, centered */
+.wake-solo{ align-items:center; justify-content:center; }
+.phone-solo{ width:470px; max-width:100%; border-radius:30px; box-shadow:0 20px 55px rgba(0,0,0,.28); }
 
 /* temperature media */
 .temp-media{ position:relative; height:100%; }
@@ -530,10 +532,20 @@ body{
         </div>
       </section>
 
-      <!-- 3. SOLUTION: SMART WAKE-UP (original slide + tailored badge) -->
-      <section class="slide slide-image no-chrome" data-slide="sol-wakeup" data-problem="wakeup">
-        <img class="slide-bg" src="orig_solwakeup.png" alt="Can't wake up — Smart Wake Up feature" />
+      <!-- 3. SOLUTION: SMART WAKE-UP (single expanded phone) -->
+      <section class="slide slide-solution" data-slide="sol-wakeup" data-problem="wakeup">
         <div class="sol-badge" data-badge="wakeup"></div>
+        <div class="sol-left">
+          <h1 class="head"><span class="orange">CAN'T</span><br>WAKE UP?</h1>
+          <span class="pill">Smart Wake Up feature</span>
+          <ul class="sol-list">
+            <li>Gentle vibration in the bed</li>
+            <li>Gradual temperature change</li>
+          </ul>
+        </div>
+        <div class="sol-right wake-solo">
+          <img class="phone-solo" src="phone_wakeup.png" alt="Smart wake-up screen showing 6:45 AM sleep cycle" />
+        </div>
       </section>
 
       <!-- 4. SOLUTION: DUAL-ZONE (original slide + tailored badge) -->
@@ -542,10 +554,29 @@ body{
         <div class="sol-badge" data-badge="temperature"></div>
       </section>
 
-      <!-- 5. SOLUTION: AI TEMP (original slide + tailored badge) -->
-      <section class="slide slide-image no-chrome" data-slide="sol-energy" data-problem="energy">
-        <img class="slide-bg" src="orig_solenergy.png" alt="Wake up tired — AI temperature adjustments" />
+      <!-- 5. SOLUTION: AI TEMP (chart) -->
+      <section class="slide slide-solution" data-slide="sol-energy" data-problem="energy">
         <div class="sol-badge" data-badge="energy"></div>
+        <div class="sol-left">
+          <h1 class="head"><span class="orange">WAKE UP</span><br>TIRED?</h1>
+          <span class="pill">AI Temperature Adjustments</span>
+          <ul class="sol-list">
+            <li>Maximizes deep &amp; REM sleep</li>
+            <li>~10% more restorative sleep</li>
+          </ul>
+        </div>
+        <div class="sol-right chart-wrap">
+          <div class="chart-title">CHANGE IN RECOVERY SLEEP</div>
+          <div class="chart">
+            <div class="y-axis">
+              <span>60%</span><span>50%</span><span>40%</span><span>30%</span><span>20%</span><span>10%</span><span>0%</span>
+            </div>
+            <div class="bars">
+              <div class="bar-col"><div class="bar" data-h="41"><span class="bar-pct" data-v="41">0%</span></div><span class="bar-label">Without Pod5</span></div>
+              <div class="bar-col"><div class="bar" data-h="52"><span class="bar-pct" data-v="52">0%</span></div><span class="bar-label">With Pod5</span></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- 6. KEY FEATURES (original slide) -->
