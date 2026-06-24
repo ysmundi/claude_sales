@@ -1147,6 +1147,9 @@ window.DECK = {
       if (!started) return;
       // let interactive controls handle their own taps
       if (e.target.closest('button, input, textarea, select, a, .judge-chip')) return;
+      // Problems slide: only advance OUTSIDE the problem boxes, so taps while
+      // aiming for judge names don't accidentally move on.
+      if (currentId === 'problems' && e.target.closest('.prob-card')) return;
       // left third = back, rest = forward
       if (e.clientX < window.innerWidth * 0.32) prev(); else next();
     });
