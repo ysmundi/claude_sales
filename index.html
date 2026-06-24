@@ -118,18 +118,24 @@ body{
 .setup-card{
   width:560px; max-width:92vw; text-align:center; padding:20px; margin:auto;
 }
-/* short landscape phones: compact the setup so Start stays reachable */
-@media (max-height:520px){
-  .setup-logo{ margin-bottom:8px; }
-  .setup-title{ font-size:46px; }
-  .setup-sub{ margin:4px 0 14px; font-size:14px; }
-  .field-label{ margin:10px 0 6px; }
-  .judge-num{ font-size:28px; padding:8px 0; }
-  .step-btn{ font-size:26px; }
-  .jn-input{ padding:9px 14px; }
-  .judge-names{ gap:7px; }
-  .start-btn{ margin-top:14px; padding:13px; font-size:19px; }
-  .setup-hint{ margin-top:12px; }
+/* short / landscape phones: compact the setup so it fits with no scrolling */
+@media (max-height:560px){
+  .setup{ align-items:flex-start; padding:10px; }
+  .setup-card{ width:760px; padding:6px 10px; }
+  .setup-logo{ display:none; }
+  .setup-title{ font-size:30px; }
+  .setup-sub{ display:none; }
+  .setup-hint{ display:none; }
+  .field-label{ margin:8px 0 4px; font-size:13px; }
+  .judge-stepper{ gap:8px; }
+  .judge-num{ font-size:22px; padding:5px 0; }
+  .step-btn{ width:48px; font-size:22px; }
+  /* judge name inputs in a 2-column grid to halve the height */
+  .judge-names{ flex-direction:row; flex-wrap:wrap; gap:6px 12px; }
+  .judge-name-row{ flex:1 1 44%; gap:8px; }
+  .jn-prefix{ min-width:auto; font-size:13px; }
+  .jn-input{ padding:6px 12px; font-size:14px; }
+  .start-btn{ margin-top:10px; padding:10px; font-size:17px; }
 }
 .setup-logo{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:18px; }
 .setup-title{ font-family:var(--display); font-weight:900; font-size:96px; color:var(--orange); line-height:.9; letter-spacing:-3px; }
@@ -723,9 +729,30 @@ window.DECK = {
     var s = Math.min(vw / 1440, vh / 810);
     stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
   }
-  window.addEventListener('resize', fitStage);
-  window.addEventListener('orientationchange', function () { setTimeout(fitStage, 250); });
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitStage);
+
+  /* -------- scale the setup card to fit the screen height (no scrolling) -------- */
+  function fitSetup() {
+    var card = document.querySelector('.setup-card');
+    if (!card || setupEl.classList.contains('hidden')) return;
+    card.style.transform = '';
+    var vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    var s = (vh - 16) / card.offsetHeight;
+    if (s < 1) {
+      setupEl.style.alignItems = 'flex-start';
+      setupEl.style.overflowY = 'hidden';
+      card.style.transformOrigin = 'top center';
+      card.style.transform = 'scale(' + s + ')';
+    } else {
+      setupEl.style.alignItems = '';
+      setupEl.style.overflowY = '';
+      card.style.transformOrigin = '';
+    }
+  }
+
+  function refit() { fitStage(); requestAnimationFrame(fitSetup); }
+  window.addEventListener('resize', refit);
+  window.addEventListener('orientationchange', function () { setTimeout(refit, 250); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', refit);
 
   /* -------- active (filtered + ordered) slide list -------- */
   function activeList() {
@@ -1047,7 +1074,7 @@ window.DECK = {
       row.className = 'judge-name-row';
       var pre = document.createElement('span');
       pre.className = 'jn-prefix';
-      pre.textContent = 'Judge';
+      pre.textContent = 'Judge ' + n;
       var inp = document.createElement('input');
       inp.type = 'text';
       inp.className = 'text-input jn-input';
@@ -1059,6 +1086,7 @@ window.DECK = {
       row.appendChild(inp);
       box.appendChild(row);
     }
+    requestAnimationFrame(fitSetup);
   }
 
   /* -------- setup screen wiring -------- */
