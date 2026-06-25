@@ -348,10 +348,10 @@ body{
 .cmp th small{ font-size:16px; font-weight:700; }
 .cmp th.feat-col{ width:60px; }
 .cmp td{ background:var(--card); text-align:center; font-size:46px; height:96px; }
-.cmp tbody tr td:first-child{ background:transparent; }
+.cmp tbody tr td:last-child{ background:transparent; }
 .cmp tr:first-child td{ border-top-left-radius:0; }
-.cmp .rowlab{ text-align:right; font-family:var(--body); font-weight:700; font-size:24px; color:var(--orange); padding-right:18px; width:300px; }
-.cmp .yes{ color:#222; font-weight:800; }
+.cmp .rowlab{ text-align:left; font-family:var(--body); font-weight:700; font-size:24px; color:var(--orange); padding-left:18px; width:300px; }
+.cmp .yes{ color:#16a34a; font-weight:800; }
 .cmp .no{ color:#222; font-weight:800; }
 /* highlight Pod 5 column */
 .cmp .us{ position:relative; }
@@ -600,17 +600,17 @@ body{
         <table class="cmp">
           <thead>
             <tr>
-              <th class="feat-col"></th>
               <th class="us">POD 5<br><small>EIGHT SLEEP</small></th>
               <th>CHILISLEEP<br><small>CUBE</small></th>
               <th>CHILIPAD<br><small>DOCK PRO</small></th>
               <th>BEDJET 3</th>
+              <th class="feat-col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr><td class="rowlab">Dual Zone Temperature Control</td><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td></tr>
-            <tr><td class="rowlab">AI Temperature Adjustments</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
-            <tr><td class="rowlab">Smart Wake Up</td><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td></tr>
+            <tr><td class="us"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✕</span></td><td class="rowlab">Dual Zone Temperature Control</td></tr>
+            <tr><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td class="rowlab">AI Temperature Adjustments</td></tr>
+            <tr><td class="us"><span class="yes">✓</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td><span class="no">✕</span></td><td class="rowlab">Smart Wake Up</td></tr>
           </tbody>
         </table>
       </section>
