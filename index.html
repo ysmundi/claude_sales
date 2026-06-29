@@ -799,12 +799,25 @@ window.DECK = {
   window.addEventListener('orientationchange', function () { setTimeout(refit, 250); });
   if (window.visualViewport) window.visualViewport.addEventListener('resize', refit);
 
-  /* -------- active (filtered + ordered) slide list -------- */
+  /* -------- active (always-complete + reordered) slide list --------
+     Every solution slide is always shown. Within the solution block the
+     slides that solve a judge's stated problem come first (canonical order),
+     followed by the remaining "extra feature" solutions (canonical order). */
   function activeList() {
-    return DECK.order.filter(function (id) {
-      var prob = COND[id];
-      return !prob || isAssigned(prob);
+    var solIds = DECK.order.filter(function (id) { return COND[id]; });
+    var ordered = solIds.filter(function (id) { return isAssigned(COND[id]); })
+      .concat(solIds.filter(function (id) { return !isAssigned(COND[id]); }));
+
+    var list = [], inserted = false;
+    DECK.order.forEach(function (id) {
+      if (COND[id]) {
+        if (!inserted) { list = list.concat(ordered); inserted = true; }
+        // other solution slides are emitted as part of the reordered block
+      } else {
+        list.push(id);
+      }
     });
+    return list;
   }
 
   /* -------- count-up animation -------- */
@@ -911,7 +924,11 @@ window.DECK = {
     var badge = slideEls[slideId].querySelector('.sol-badge');
     if (!badge) return;
     var arr = judgesFor(problem);
-    if (arr.length === 0) { badge.innerHTML = ''; return; }
+    if (arr.length === 0) {
+      // no judge raised this problem — show it as a bonus capability
+      badge.innerHTML = '<span class="sb-row"><span class="sb-judges">EXTRA FEATURE</span></span>';
+      return;
+    }
     var who = arr.length === 1
       ? judgeLabel(arr[0])
       : 'JUDGES ' + judgeListLabel(arr);
